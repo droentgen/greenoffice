@@ -1,0 +1,6 @@
+# Uploaded files are documents and images only — never run them as code.
+<FilesMatch "\.(php|phtml|php\d|phar|pl|py|cgi|sh)$">
+  Require all denied
+</FilesMatch>
+php_flag engine off
+Options -Indexes

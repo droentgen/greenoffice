@@ -1,0 +1,12 @@
+config/config.php
+public/uploads/*
+!public/uploads/.htaccess
+!public/uploads/docs/
+!public/uploads/news/
+public/uploads/docs/*
+public/uploads/news/*
+!public/uploads/docs/.gitkeep
+!public/uploads/news/.gitkeep
+.DS_Store
+.vscode/*
+!.vscode/extensions.json

@@ -1,0 +1,5 @@
+# For XAMPP/shared hosting where the whole project sits inside the web root:
+# send visitors to public/ and block the private folders.
+RewriteEngine On
+RewriteRule ^(app|config|database)(/|$) - [F,L]
+RewriteRule ^$ public/ [L]

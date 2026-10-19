@@ -1,0 +1,87 @@
+# Green Office Digital Platform — คณะเกษตร มหาวิทยาลัยเกษตรศาสตร์
+
+เว็บไซต์สำนักงานสีเขียว (Public Website) + ระบบหลังบ้าน (Admin & Assessment Portal)
+เขียนด้วย **PHP 8 + MySQL/MariaDB** แบบไม่ใช้ framework และ **Tailwind CSS** — แก้ไขง่ายด้วย VS Code หรือ Claude Code
+
+## สิ่งที่ต้องมี
+- PHP 8.1 ขึ้นไป (มี `pdo_mysql`, `mbstring`, `fileinfo`)
+- MySQL 8 หรือ MariaDB 10.4 ขึ้นไป
+- ง่ายสุด: ติดตั้ง [XAMPP](https://www.apachefriends.org/) (มีครบทั้ง Apache, PHP, MySQL, phpMyAdmin)
+
+## ติดตั้งบนเครื่อง (XAMPP)
+1. วางโฟลเดอร์ `green-office` ไว้ใน `C:\xampp\htdocs\` (Mac: `/Applications/XAMPP/htdocs/`)
+2. คัดลอก `config/config.sample.php` เป็น `config/config.php` แล้วแก้ชื่อผู้ใช้/รหัสผ่านฐานข้อมูล (XAMPP ปกติคือ `root` ไม่มีรหัสผ่าน)
+3. สร้างฐานข้อมูล เลือกวิธีใดวิธีหนึ่ง
+   - **ผ่าน phpMyAdmin**: สร้างฐานข้อมูลชื่อ `green_office` (Collation `utf8mb4_unicode_ci`) → Import `database/schema.sql` → Import `database/seed.sql`
+   - **ผ่าน Terminal**: `php database/install.php` (สร้างฐานข้อมูลและใส่ข้อมูลให้อัตโนมัติ, เพิ่ม `--no-sample` ถ้าไม่ต้องการข้อมูลตัวอย่าง)
+4. เปิด http://localhost/green-office/public/
+
+ไม่มี XAMPP แต่มี PHP: `php -S localhost:8000 -t public` แล้วเปิด http://localhost:8000
+
+## เข้าระบบหลังบ้าน
+- URL: `/admin/`
+- ชื่อผู้ใช้ **admin** · รหัสผ่าน **green2569**
+- ⚠️ เปลี่ยนรหัสผ่านทันทีหลังเข้าใช้ครั้งแรก (ระบบหลังบ้าน › ผู้ใช้งานและรายงาน) — ระบบจะเตือนจนกว่าจะเปลี่ยน
+
+## โครงสร้างโฟลเดอร์
+```
+green-office/
+├─ public/                 ← หน้าเว็บทั้งหมด (ตั้งเป็น Document Root บนเซิร์ฟเวอร์จริง)
+│  ├─ index.php            หน้าแรก + เกม Green Check-in + ตัวเลขวิ่ง
+│  ├─ about.php            เกี่ยวกับเรา (แท็บ นโยบาย/เป้าหมาย/คณะทำงาน/มาตรการ แสดงรูปหรือ PDF, คลิปสรุป)
+│  ├─ operations.php       การดำเนินงาน 7 หมวด
+│  ├─ category.php         ตารางตัวชี้วัดแต่ละหมวด กรองตามปี
+│  ├─ stats.php            สถิติการใช้ทรัพยากร
+│  ├─ news.php, news-view.php
+│  ├─ feedback.php         ข้อคิดเห็นและข้อร้องเรียนทางด้านสิ่งแวดล้อม (แบบสอบถาม)
+│  ├─ complaints.php, complaint-view.php   ประกาศข้อร้องเรียน
+│  ├─ complaint-plan.php   แผนการจัดการข้อร้องเรียน
+│  ├─ api/game.php         บันทึกผลเกม
+│  ├─ admin/               ระบบหลังบ้าน (ทุกหน้า)
+│  ├─ assets/              css, js, รูปโลโก้
+│  └─ uploads/             ไฟล์ที่อัปโหลด (PDF/รูป)
+├─ app/                    โค้ดส่วนกลาง (ห้ามเปิดจากเว็บ)
+│  ├─ bootstrap.php        โหลด config, session, ฐานข้อมูล
+│  ├─ db.php               ฟังก์ชัน q(), rows(), row(), val()
+│  ├─ helpers.php          e(), url(), csrf, flash, upload, setting()
+│  ├─ auth.php             เข้าสู่ระบบ/สิทธิ์ผู้ใช้
+│  ├─ data.php             query ที่ใช้หลายหน้า (สถิติ, ตัวชี้วัด, ข้อร้องเรียน)
+│  └─ views/               header/footer ของหน้าเว็บและหลังบ้าน, มาสคอต
+├─ config/                 config.php (ไม่อยู่ใน git)
+└─ database/               schema.sql, seed.sql, install.php, criteria.json
+```
+
+## แก้ไขบ่อย ๆ ทำที่ไหน
+| อยากแก้ | ไฟล์ |
+|---|---|
+| สี / ฟอนต์ ทั้งเว็บ | `app/views/partials/head.php` (tailwind.config) |
+| เมนูด้านบน / ส่วนท้ายทุกหน้า | `app/views/public_top.php`, `app/views/public_bottom.php` |
+| คำถามเกม Intro | `public/index.php` (ตัวแปร `$questions`) และ `GAME_TOPICS` ใน `app/data.php` |
+| ภารกิจสุ่มในแถบฮีโร่ | `$tips` ใน `app/views/public_bottom.php` |
+| ที่อยู่ เบอร์ อีเมล คลิป ค่า EF | ระบบหลังบ้าน › ตั้งค่าเว็บไซต์ (ไม่ต้องแก้โค้ด) |
+| เมนูหลังบ้าน / สิทธิ์ | `app/views/admin_top.php` (`$menu`) |
+| ตารางฐานข้อมูล | `database/schema.sql` |
+
+## สิทธิ์ผู้ใช้
+| สิทธิ์ | ทำอะไรได้ |
+|---|---|
+| ผู้ดูแลระบบ (admin) | ทุกอย่าง รวมผู้ใช้และตั้งค่า |
+| ผู้จัดการเนื้อหา (editor) | ข่าว เอกสาร แผนกิจกรรม รายงานผล ข้อร้องเรียน |
+| ผู้กรอกข้อมูล (staff) | สถิติ แผนกิจกรรม รายงานผล |
+| ผู้ตรวจประเมิน (auditor) | รายงานผล ตรวจประเมินและติดตามแก้ไข |
+
+## ขึ้นเซิร์ฟเวอร์จริง
+1. ตั้ง Document Root ไปที่ `public/` แล้วใส่ `'base_url' => ''` ใน config (ถ้าวางทั้งโฟลเดอร์ใน web root ไฟล์ `.htaccess` จะกันโฟลเดอร์ `app/ config/ database/` ให้)
+2. ตั้ง `'debug' => false`
+3. ใช้ HTTPS และเปลี่ยนรหัสผ่าน admin
+4. ให้สิทธิ์เขียนโฟลเดอร์ `public/uploads/`
+5. ลบข้อมูลตัวอย่าง: ติดตั้งใหม่ด้วย `php database/install.php --no-sample`
+6. Tailwind ตอนนี้โหลดจาก CDN (สะดวกตอนพัฒนา) — ถ้าต้องการเร็วขึ้นบนเซิร์ฟเวอร์จริง ให้ build CSS ด้วย Tailwind CLI แล้วเปลี่ยน `<script src="https://cdn.tailwindcss.com">` เป็น `<link>` ไฟล์ CSS
+
+## ความปลอดภัยที่มีให้แล้ว
+รหัสผ่านเข้ารหัส bcrypt · CSRF token ทุกฟอร์ม · Prepared statements ทุก query · Escape HTML ทุกจุด · ตรวจชนิดไฟล์อัปโหลดจากเนื้อไฟล์จริง และกันรันสคริปต์ในโฟลเดอร์ uploads · จำกัดการเดารหัสผ่าน (5 ครั้ง/60 วินาที) · ข้อมูลผู้แจ้งข้อร้องเรียนไม่แสดงบนหน้าเว็บ
+
+## ข้อมูลตัวอย่าง
+สถิติรายเดือน ข่าว รายงานผลบางข้อ ข้อร้องเรียน 3 เรื่อง และข้อสังเกตการตรวจ เป็น **ข้อมูลตัวอย่าง** สำหรับทดลองระบบ
+ข้อความในวงเล็บ เช่น `[เบอร์โทรสำนักงาน]` คือช่องที่รอใส่ข้อมูลจริง
+ตัวชี้วัด 73 ข้อใน 7 หมวด มาจากตารางเกณฑ์สำนักงานสีเขียวที่แนบมา (`database/criteria.json`)

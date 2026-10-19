@@ -1,0 +1,39 @@
+# CLAUDE.md — guide for working on this project
+
+Green Office Digital Platform for the Faculty of Agriculture, Kasetsart University.
+Plain PHP 8 (no framework) + MySQL/MariaDB + Tailwind CSS (Play CDN). UI text is Thai.
+
+## Run locally
+```bash
+cp config/config.sample.php config/config.php   # set DB user/pass
+php database/install.php                        # create DB + tables + starting data (add --no-sample for clean)
+php -S localhost:8000 -t public                 # http://localhost:8000  (admin: /admin/  admin / green2569)
+```
+After changing seed data in `database/install.php`, regenerate the SQL for phpMyAdmin users:
+`php database/install.php --dump-seed > database/seed.sql`
+
+## Layout
+- `public/` is the web root. Each page is one PHP file: load `app/bootstrap.php`, query, then include
+  `app/views/public_top.php` … `public_bottom.php` (or `admin_top.php` … `admin_bottom.php`).
+- `app/db.php` — `q()`, `rows()`, `row()`, `val()`; always pass values as `?` params.
+- `app/helpers.php` — `e()` escape, `url()`, `redirect()`, `csrf_field()/csrf_check()`, `flash()`, `setting()`, `save_upload()`, `clean_url()`.
+- `app/auth.php` — `require_login(['role', ...])` at the top of every admin page (admin always allowed).
+- `app/data.php` — shared queries: resources (GHG computed from fuel + electricity × factors in settings),
+  7-category criteria (`category_table()`, `category_progress()`), complaints, intro game stats.
+- `public/assets/js/app.js` — running numbers (`data-count`), growing bars (`.grow-bar` + `data-w`), mascot eyes (`.js-pupil`), parallax (`data-parallax`/`data-depth`), intro game (`#checkin`), confirm dialogs (`data-confirm`).
+- Theme colours/fonts and component classes (`btn-primary`, `card`, `input`, `label`, `chip`…) live in `app/views/partials/head.php`.
+
+## Rules to keep
+- Escape every output with `e()`; never build SQL with string concatenation of user input.
+- Every form that changes data: `<?= csrf_field() ?>` in the form and `csrf_check()` on POST.
+- Admin pages must call `require_login()` first.
+- Uploads only through `save_upload()` (whitelisted extensions, MIME checked).
+- Never show complaint `name`/`contact` on public pages; public pages use `public_title`/`public_detail` only.
+- Resource order on the site is fixed: fuel → GHG → electricity → water → paper (`resource_meta()`).
+- Keep pages mobile-friendly (flex-wrap / auto-fit grids, tables inside `overflow-x-auto`) and touch targets ≥ 44px.
+
+## Database (see database/schema.sql)
+users, settings, resource_monthly, categories, criteria_issues, criteria_indicators, criteria_subitems,
+criteria_reports (one per indicator per year; checks_json = finished sub-items), criteria_evidence (links),
+news, documents (about tabs + complaint plan; pdf/image/link), missions, activities, audit_findings,
+complaints, complaint_plan_steps, game_responses.

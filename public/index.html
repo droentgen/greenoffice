@@ -1,0 +1,516 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="csrf" content="static-preview">
+<link rel="icon" href="assets/img/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mitr:wght@400;500;600&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  // Brand colours and fonts — change them here and the whole site follows.
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          ku: '#006664', 'ku-deep': '#003D3C', 'ku-mid': '#0B7A77',
+          mint: '#E6F3F1', lime: '#C5E063', leaf: '#9CCB3B', sun: '#FFC845',
+          ink: '#10302F', cream: '#F8F6EC', muted: '#4A5F5D', line: '#E4E8DC'
+        },
+        fontFamily: {
+          display: ['Mitr', 'sans-serif'],
+          sans: ['"Noto Sans Thai"', 'system-ui', 'sans-serif']
+        }
+      }
+    }
+  };
+</script>
+<style type="text/tailwindcss">
+  @layer components {
+    .btn { @apply inline-flex items-center justify-center gap-2 min-h-[44px] px-5 py-2 rounded-full font-semibold transition duration-200 hover:-translate-y-0.5 active:translate-y-px disabled:opacity-50; }
+    .btn-primary { @apply btn bg-ku text-white hover:shadow-lg hover:shadow-ku/30; }
+    .btn-dark { @apply btn bg-ink text-white; }
+    .btn-sun { @apply btn bg-sun text-ink; }
+    .btn-outline { @apply btn border-2 border-ku text-ku bg-white; }
+    .btn-sm { @apply min-h-[36px] px-3 py-1 text-sm; }
+    .btn-danger { @apply btn border border-red-200 text-red-700 bg-white; }
+    .card { @apply bg-white rounded-3xl border border-line; }
+    .input { @apply w-full min-h-[46px] px-3 py-2 rounded-xl border-2 border-[#DDE3D9] bg-[#FAFBF8] font-normal text-base focus:border-ku focus:outline-none; }
+    .label { @apply flex flex-col gap-1.5 font-semibold text-sm; }
+    .chip { @apply inline-block text-xs font-semibold px-2.5 py-0.5 rounded-full whitespace-nowrap; }
+    .eyebrow { @apply text-sm font-semibold text-ku tracking-wide; }
+    .h-page { @apply font-display font-semibold text-[clamp(32px,5vw,52px)] leading-tight; }
+  }
+</style>
+<link rel="stylesheet" href="assets/css/app.css">
+<title>หน้าแรก · Green Office คณะเกษตร</title>
+</head>
+<body class="font-sans text-ink antialiased">
+<a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:bg-white focus:p-3">ข้ามไปเนื้อหา</a>
+<header class="sticky top-0 z-30 bg-cream/90 backdrop-blur border-b border-line">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-2 flex items-center gap-3 flex-wrap">
+    <a href="index.php" class="flex items-center gap-3 no-underline text-ink">
+      <img src="assets/img/logo.png" alt="" class="w-14 h-14 object-contain">
+      <span class="leading-tight">
+        <span class="block font-display font-semibold text-ku text-lg">GREEN OFFICE</span>
+        <span class="block text-xs text-muted">คณะเกษตร ม.เกษตรศาสตร์</span>
+      </span>
+    </a>
+    <nav aria-label="เมนูหลัก" class="hidden lg:flex flex-1 justify-center gap-1">
+      <a href="index.php" class="min-h-[44px] inline-flex items-center px-4 rounded-full font-medium text-[15px] transition bg-ku text-white" aria-current="page">หน้าแรก</a>
+      <a href="about.php" class="min-h-[44px] inline-flex items-center px-4 rounded-full font-medium text-[15px] transition text-ink hover:bg-mint">เกี่ยวกับเรา</a>
+      <a href="operations.php" class="min-h-[44px] inline-flex items-center px-4 rounded-full font-medium text-[15px] transition text-ink hover:bg-mint">การดำเนินงาน</a>
+      <a href="stats.php" class="min-h-[44px] inline-flex items-center px-4 rounded-full font-medium text-[15px] transition text-ink hover:bg-mint">สถิติการใช้ทรัพยากร</a>
+      <a href="news.php" class="min-h-[44px] inline-flex items-center px-4 rounded-full font-medium text-[15px] transition text-ink hover:bg-mint">ข่าวสารและกิจกรรม</a>
+    </nav>
+    <a href="admin/" class="hidden lg:inline-flex btn-outline btn-sm">
+      <svg aria-hidden="true" class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>ระบบหลังบ้าน
+    </a>
+    <details class="lg:hidden ml-auto relative">
+      <summary class="list-none btn-outline btn-sm cursor-pointer" aria-label="เปิดเมนู">เมนู</summary>
+      <div class="absolute right-0 mt-2 w-64 card p-2 shadow-xl flex flex-col">
+        <a href="index.php" class="min-h-[44px] flex items-center px-3 rounded-xl bg-ku text-white">หน้าแรก</a>
+        <a href="about.php" class="min-h-[44px] flex items-center px-3 rounded-xl hover:bg-mint">เกี่ยวกับเรา</a>
+        <a href="operations.php" class="min-h-[44px] flex items-center px-3 rounded-xl hover:bg-mint">การดำเนินงาน</a>
+        <a href="stats.php" class="min-h-[44px] flex items-center px-3 rounded-xl hover:bg-mint">สถิติการใช้ทรัพยากร</a>
+        <a href="news.php" class="min-h-[44px] flex items-center px-3 rounded-xl hover:bg-mint">ข่าวสารและกิจกรรม</a>
+        <a href="admin/" class="min-h-[44px] flex items-center px-3 rounded-xl text-ku font-semibold hover:bg-mint">ระบบหลังบ้าน</a>
+      </div>
+    </details>
+  </div>
+</header>
+<main id="main">
+
+<!-- ===== Intro game overlay (shows on first visit; replay with the button or #play) ===== -->
+<div id="checkin" hidden class="fixed inset-0 z-50 overflow-y-auto bg-ku text-white" role="dialog" aria-modal="true" aria-label="เกม Green Check-in"
+     data-questions='[{&quot;topic&quot;:&quot;ประหยัดไฟ&quot;,&quot;name&quot;:&quot;ปิดไฟ-แอร์&quot;,&quot;q&quot;:&quot;ออกจากห้องปุ๊บ ปิดไฟ-แอร์ทุกครั้งไหม?&quot;},{&quot;topic&quot;:&quot;ลดพลาสติก&quot;,&quot;name&quot;:&quot;พกแก้ว/ขวดน้ำ&quot;,&quot;q&quot;:&quot;พกแก้วหรือขวดน้ำส่วนตัวมาคณะบ้างไหม?&quot;},{&quot;topic&quot;:&quot;ลดกระดาษ&quot;,&quot;name&quot;:&quot;ลดการปริ้นต์&quot;,&quot;q&quot;:&quot;ส่งงานออนไลน์ หรือปริ้นต์สองหน้าเป็นนิสัยหรือยัง?&quot;},{&quot;topic&quot;:&quot;เดินทางรักษ์โลก&quot;,&quot;name&quot;:&quot;เดิน ปั่น ขนส่งสาธารณะ&quot;,&quot;q&quot;:&quot;มาคณะด้วยการเดิน ปั่น หรือรถสาธารณะบ้างไหม?&quot;}]' data-api="api/game.php">
+  <div aria-hidden="true" class="anim-blob absolute w-[560px] h-[560px] -left-44 -top-40 bg-ku-mid"></div>
+  <div aria-hidden="true" class="anim-blob absolute w-[420px] h-[420px] -right-28 -bottom-36 bg-[#004F4D]" style="animation-delay:-4s"></div>
+  <img src="assets/img/logo.png" alt="AGR Green Office" class="absolute left-5 top-5 w-24 h-24 object-contain bg-white rounded-3xl p-1.5">
+  <div class="relative min-h-full flex items-center justify-center px-5 py-28">
+    <div class="w-full max-w-5xl flex flex-wrap gap-10 items-center justify-center">
+      <div class="flex-[1_1_280px] max-w-[340px] flex flex-col items-center gap-4 text-center">
+        <div class="anim-bob">
+          <svg role="img" aria-label="น้องกล้า มาสคอต Green Office" class="mascot w-60 h-64" viewBox="0 0 240 260" style="overflow:visible">
+            <ellipse cx="120" cy="248" rx="70" ry="10" fill="#003D3C" opacity=".3"/>
+            <path d="M120 70 C120 50 118 38 112 26" stroke="#2E7D32" stroke-width="6" fill="none" stroke-linecap="round"/>
+            <path d="M112 30 C84 8 52 18 46 40 C72 48 98 46 112 30z" fill="#C5E063"/>
+            <path d="M114 32 C134 2 176 4 188 26 C160 44 132 44 114 32z" fill="#9CCB3B"/>
+            <rect x="44" y="64" width="152" height="170" rx="76" fill="#E9F5EC"/>
+            <path d="M44 170 Q120 196 196 170 L196 200 Q196 234 120 234 Q44 234 44 200z" fill="#CFE8E4"/>
+            <path d="M60 176 Q120 200 180 176 L176 194 Q120 214 64 194z" fill="#FFC845"/>
+            <circle cx="92" cy="128" r="17" fill="#ffffff"/><circle cx="148" cy="128" r="17" fill="#ffffff"/>
+            <circle class="js-pupil" data-cx="92" data-cy="130" cx="92" cy="130" r="8" fill="#10302F"/>
+            <circle class="js-pupil" data-cx="148" data-cy="130" cx="148" cy="130" r="8" fill="#10302F"/>
+            <path d="M78 104 Q92 96 106 102" stroke="#10302F" stroke-width="4" fill="none" stroke-linecap="round"/>
+            <path d="M134 102 Q148 96 162 104" stroke="#10302F" stroke-width="4" fill="none" stroke-linecap="round"/>
+            <path class="arm" d="M190 140 Q222 120 226 92" stroke="#E9F5EC" stroke-width="16" fill="none" stroke-linecap="round"/>
+            <circle cx="72" cy="154" r="9" fill="#FF9E80" opacity=".55"/><circle cx="168" cy="154" r="9" fill="#FF9E80" opacity=".55"/>
+            <path d="M106 152 Q120 166 134 152" stroke="#10302F" stroke-width="4" fill="none" stroke-linecap="round"/>
+            <path d="M50 150 Q26 170 34 196" stroke="#E9F5EC" stroke-width="16" fill="none" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="font-display text-[15px] bg-white/10 px-4 py-2 rounded-full">สวัสดี! เราชื่อ "น้องกล้า" ผู้ช่วยสายกรีนของคณะ</div>
+      </div>
+      <div class="flex-[2_1_420px] max-w-xl">
+        <div data-q class="flex flex-col gap-5">
+          <div class="flex items-center justify-between gap-3 flex-wrap">
+            <span class="font-display text-sm tracking-widest text-lime">GREEN CHECK-IN · ด่าน <span data-q-num>1</span>/4</span>
+            <button type="button" data-close class="underline text-[#CFE8E4] p-2">ข้ามไปหน้าเว็บ</button>
+          </div>
+          <div class="flex gap-2"><div data-dot class="flex-1 h-2 rounded-full bg-white/20 transition"></div><div data-dot class="flex-1 h-2 rounded-full bg-white/20 transition"></div><div data-dot class="flex-1 h-2 rounded-full bg-white/20 transition"></div><div data-dot class="flex-1 h-2 rounded-full bg-white/20 transition"></div></div>
+          <div data-card class="bg-black/20 border border-white/15 rounded-[28px] p-7 flex flex-col gap-5">
+            <div class="flex items-center gap-4">
+              <div class="w-16 h-16 rounded-[20px] bg-lime text-ku-deep flex items-center justify-center flex-none">
+                <svg data-q-icon="0" aria-hidden="true" class="w-9 h-9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2V16h5v-.1c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"/></svg>
+                <svg data-q-icon="1" hidden aria-hidden="true" class="w-9 h-9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2h4v3l1.5 2.5V20a2 2 0 0 1-2 2h-3a2 2 0 0 1-2-2V7.5L10 5z"/><path d="M8.5 11h7"/></svg>
+                <svg data-q-icon="2" hidden aria-hidden="true" class="w-9 h-9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg>
+                <svg data-q-icon="3" hidden aria-hidden="true" class="w-9 h-9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="17" r="3.5"/><circle cx="18" cy="17" r="3.5"/><path d="M6 17l4-8h5l3 8M10 9 8.5 6H6.5M14 6h2.5"/></svg>
+              </div>
+              <div>
+                <div class="text-sm text-[#CFE8E4]">ภารกิจ: <span data-q-topic></span></div>
+                <h1 class="font-display font-medium text-[28px] leading-tight" data-q-text></h1>
+              </div>
+            </div>
+            <div class="flex flex-col gap-2.5">
+              <button type="button" data-answer="2" class="ans flex items-center justify-between gap-3 min-h-[56px] px-5 py-3 rounded-2xl border-2 border-white/25 bg-white/5 text-left text-[17px]">
+                <span>ทำเป็นประจำ สบายมาก</span><span class="text-sm text-lime whitespace-nowrap">+2 ใบไม้</span>
+              </button>
+              <button type="button" data-answer="1" class="ans flex items-center justify-between gap-3 min-h-[56px] px-5 py-3 rounded-2xl border-2 border-white/25 bg-white/5 text-left text-[17px]">
+                <span>บางครั้ง ถ้าไม่ลืม</span><span class="text-sm text-lime whitespace-nowrap">+1 ใบไม้</span>
+              </button>
+              <button type="button" data-answer="0" class="ans flex items-center justify-between gap-3 min-h-[56px] px-5 py-3 rounded-2xl border-2 border-white/25 bg-white/5 text-left text-[17px]">
+                <span>ยังไม่เคย แต่พร้อมเริ่ม</span><span class="text-sm text-lime whitespace-nowrap">เริ่มวันนี้!</span>
+              </button>
+            </div>
+          </div>
+          <p class="text-sm text-[#CFE8E4]">คำตอบของคุณช่วยให้คณะรู้ว่าเราควรชวนกันทำเรื่องไหนเพิ่ม — ไม่มีถูกผิด ตอบตามจริงได้เลย</p>
+        </div>
+        <div data-result hidden class="anim-pop flex flex-col gap-5">
+          <span class="font-display text-sm tracking-widest text-lime">ผลเช็กอินของคุณ</span>
+          <div class="font-display text-[44px] font-semibold leading-tight" data-level></div>
+          <p class="text-lg text-mint" data-level-desc></p>
+          <div class="flex items-baseline gap-2.5"><span class="font-display text-[56px] text-sun leading-none" data-score>0</span><span class="text-[#CFE8E4]">/ 8 ใบไม้</span></div>
+          <div class="grid grid-cols-2 gap-2.5" data-topics></div>
+          <div class="flex gap-3 flex-wrap">
+            <button type="button" data-close class="btn-sun text-lg font-display font-normal">เข้าสู่เว็บไซต์ →</button>
+            <button type="button" data-play class="btn border-2 border-white/40 text-white">เล่นใหม่</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Hero ===== -->
+<section class="relative overflow-hidden" data-parallax>
+  <span aria-hidden="true" class="anim-drift absolute top-[12%] left-0 text-leaf"><svg aria-hidden="true" class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19c0-8 5-14 15-15-1 10-7 15-15 15z"/><path d="M5 19 13 11"/></svg></span>
+  <span aria-hidden="true" class="anim-drift absolute top-[70%] left-0 text-ku/50" style="animation-delay:-11s"><svg aria-hidden="true" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19c0-8 5-14 15-15-1 10-7 15-15 15z"/><path d="M5 19 13 11"/></svg></span>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 pt-14 pb-16 flex flex-wrap gap-10 items-center">
+    <div class="flex-[1_1_460px] flex flex-col gap-5">
+      <span class="self-start inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-mint text-ku text-sm font-semibold"><span class="w-2 h-2 rounded-full bg-leaf"></span>#เกษตรไม่ทิ้งโลก</span>
+      <h1 class="font-display font-semibold text-[clamp(42px,6vw,76px)] leading-[1.08]">ปลูกพืชเก่งแล้ว<br><span class="text-ku">ปีนี้มาปลูก</span> <span class="relative inline-block text-ku">"นิสัยกรีน"<svg aria-hidden="true" viewBox="0 0 300 20" preserveAspectRatio="none" class="absolute left-0 -bottom-2.5 w-full h-4"><path d="M4 14 Q80 2 150 10 T296 8" stroke="#FFC845" stroke-width="7" fill="none" stroke-linecap="round"/></svg></span></h1>
+      <p class="text-[19px] text-[#3E5553] max-w-xl">กรีนแบบเรา ๆ ไม่ต้องเพอร์เฟกต์ แค่เริ่มก็พอ — ทุกการปิดไฟ ทุกแก้วที่พกมา ถูกนับเป็นตัวเลขจริงบนหน้านี้</p>
+      <div class="flex gap-3 flex-wrap">
+        <a href="operations.php" class="btn-primary text-lg font-display font-normal px-7 min-h-[54px]">ร่วมภารกิจเลย →</a>
+        <button type="button" data-play class="btn border-2 border-ink min-h-[54px]">เช็กเลเวลกรีนของฉัน</button>
+      </div>
+      <div class="flex gap-7 flex-wrap pt-2">
+        <div><div class="font-display text-[34px] text-ku leading-none"><span data-count="0" data-part="players">0</span></div><div class="text-sm text-muted">คนร่วมเช็กอินแล้ว</div></div>
+        <div><div class="font-display text-[34px] text-ku leading-none"><span data-count="0" data-dec="1">0</span></div><div class="text-sm text-muted">tCO₂e ที่ลดได้จากเดือนก่อน</div></div>
+      </div>
+    </div>
+    <div class="flex-[1_1_420px] relative h-[480px] min-w-[300px]">
+      <div aria-hidden="true" data-depth="-18" class="absolute inset-0 flex items-center justify-center transition-transform duration-200"><div class="anim-blob w-[400px] h-[400px] max-w-full bg-ku"></div></div>
+      <div aria-hidden="true" data-depth="26" class="absolute right-6 top-2 transition-transform duration-200"><div class="anim-spin w-24 h-24 rounded-full bg-sun shadow-[0_0_0_14px_rgba(255,200,69,.25)]"></div></div>
+      <div class="absolute inset-0 flex items-center justify-center">
+        <div class="anim-bob">
+          <svg role="img" aria-label="น้องกล้า โบกมือทักทาย" class="mascot w-[260px] h-[282px]" viewBox="0 0 240 260" style="overflow:visible">
+            <ellipse cx="120" cy="248" rx="70" ry="10" fill="#003D3C" opacity=".3"/>
+            <path d="M120 70 C120 50 118 38 112 26" stroke="#2E7D32" stroke-width="6" fill="none" stroke-linecap="round"/>
+            <path d="M112 30 C84 8 52 18 46 40 C72 48 98 46 112 30z" fill="#C5E063"/>
+            <path d="M114 32 C134 2 176 4 188 26 C160 44 132 44 114 32z" fill="#9CCB3B"/>
+            <rect x="44" y="64" width="152" height="170" rx="76" fill="#E9F5EC"/>
+            <path d="M44 170 Q120 196 196 170 L196 200 Q196 234 120 234 Q44 234 44 200z" fill="#CFE8E4"/>
+            <path d="M60 176 Q120 200 180 176 L176 194 Q120 214 64 194z" fill="#FFC845"/>
+            <circle cx="92" cy="128" r="17" fill="#ffffff"/><circle cx="148" cy="128" r="17" fill="#ffffff"/>
+            <circle class="js-pupil" data-cx="92" data-cy="130" cx="92" cy="130" r="8" fill="#10302F"/>
+            <circle class="js-pupil" data-cx="148" data-cy="130" cx="148" cy="130" r="8" fill="#10302F"/>
+            <path d="M78 104 Q92 96 106 102" stroke="#10302F" stroke-width="4" fill="none" stroke-linecap="round"/>
+            <path d="M134 102 Q148 96 162 104" stroke="#10302F" stroke-width="4" fill="none" stroke-linecap="round"/>
+            <path class="arm" d="M190 140 Q222 120 226 92" stroke="#E9F5EC" stroke-width="16" fill="none" stroke-linecap="round"/>
+            <circle cx="72" cy="154" r="9" fill="#FF9E80" opacity=".55"/><circle cx="168" cy="154" r="9" fill="#FF9E80" opacity=".55"/>
+            <path d="M106 152 Q120 166 134 152" stroke="#10302F" stroke-width="4" fill="none" stroke-linecap="round"/>
+            <path d="M50 150 Q26 170 34 196" stroke="#E9F5EC" stroke-width="16" fill="none" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </div>
+      <div data-depth="14" class="absolute left-0 top-16 transition-transform duration-200">
+        <div class="anim-float bg-white rounded-[18px] px-4 py-3 shadow-[0_16px_30px_-18px_rgba(0,61,60,.6)] flex items-center gap-2.5">
+          <span class="w-9 h-9 rounded-xl bg-[#FFF2C2] text-[#7A5800] flex items-center justify-center"><svg aria-hidden="true" class="ico-wave w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></span>
+          <span><span class="block text-xs text-muted">ไฟฟ้าเดือนนี้</span><span class="font-display text-lg text-[#1E6B45]">↑ 4.5%</span></span>
+        </div>
+      </div>
+      <div data-depth="-12" class="absolute right-0 bottom-16 transition-transform duration-200">
+        <div class="anim-float bg-ink text-white rounded-[18px] px-4 py-3 flex items-center gap-2.5" style="animation-delay:-2.5s">
+          <span class="w-9 h-9 rounded-xl bg-lime text-ink flex items-center justify-center"><svg aria-hidden="true" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M18 14a6 6 0 0 1 3.5 6"/></svg></span>
+          <span><span class="block text-xs text-[#CFE8E4]">ภารกิจพกแก้ว</span><span class="font-display text-lg"><span data-count="0" data-part="a_plastic-count">0</span> คนทำแล้ว</span></span>
+        </div>
+      </div>
+      <div class="absolute left-7 bottom-5 font-display text-[15px] text-ku -rotate-6 bg-white px-3.5 py-1.5 rounded-full border-2 border-dashed border-leaf">ลองเลื่อนเมาส์มาทักน้องกล้าสิ</div>
+    </div>
+  </div>
+</section>
+
+<div aria-hidden="true" class="bg-ink text-lime overflow-hidden -rotate-[1.2deg] -mx-5 py-3.5">
+  <div class="anim-marquee flex gap-10 w-max font-display text-[22px] whitespace-nowrap">
+    <span>ปิดไฟก่อนออก ✦ พกแก้วมาเอง ✦ ปริ้นต์สองหน้า ✦ แยกขยะให้ถูกสี ✦ ปั่นมาเรียน ✦ ใช้ซ้ำก่อนทิ้ง ✦ ประชุมไร้กระดาษ ✦</span><span>ปิดไฟก่อนออก ✦ พกแก้วมาเอง ✦ ปริ้นต์สองหน้า ✦ แยกขยะให้ถูกสี ✦ ปั่นมาเรียน ✦ ใช้ซ้ำก่อนทิ้ง ✦ ประชุมไร้กระดาษ ✦</span>
+  </div>
+</div>
+
+<!-- ===== Resource overview (fuel, GHG, electricity, water, paper) ===== -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 pt-16 pb-6">
+  <div class="flex justify-between items-end gap-4 flex-wrap mb-6">
+    <div>
+      <div class="eyebrow">ตัวเลขสด จากระบบกรอกข้อมูล · กันยายน 2569</div>
+      <h2 class="font-display font-medium text-4xl leading-tight mt-1">ภาพรวมผลการดำเนินงานด้านสิ่งแวดล้อม</h2>
+    </div>
+    <a href="stats.php" class="btn bg-mint text-ku">ดูสถิติทั้งหมด →</a>
+  </div>
+  <div class="grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(210px,1fr))]">
+    <div class="hover-lift rounded-[26px] p-5 flex flex-col gap-3 min-h-[220px]" style="background:#FFE9D6">
+      <div class="flex justify-between items-start">
+        <div class="ico-bg w-14 h-14 rounded-[18px] bg-white flex items-center justify-center" style="color:#A3471A"><svg aria-hidden="true" class="ico-wave w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V5a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v16"/><path d="M3 21h12M6 8h6"/><path d="M14 10h2a2 2 0 0 1 2 2v4a1.5 1.5 0 0 0 3 0V8l-3-3"/></svg></div>
+        <span class="chip text-[13px]" style="background:#FDE2DD;color:#A33A2A">↑ 4.5%</span>
+      </div>
+      <div class="text-sm text-muted">01</div>
+      <div class="-mt-3 font-display text-xl" style="color:#A3471A">น้ำมันเชื้อเพลิง</div>
+      <div class="flex items-baseline gap-1.5 flex-wrap mt-auto">
+        <span class="font-display font-semibold text-4xl leading-none tabular-nums" data-count="1297" data-dec="0">0</span>
+        <span class="text-[15px] text-[#3E5553]">ลิตร</span>
+      </div>
+      <div class="text-xs text-muted">เทียบเดือนก่อน</div>
+    </div>
+    <div class="hover-lift rounded-[26px] p-5 flex flex-col gap-3 min-h-[220px]" style="background:#E8E4F7">
+      <div class="flex justify-between items-start">
+        <div class="ico-bg w-14 h-14 rounded-[18px] bg-white flex items-center justify-center" style="color:#4A3D96"><svg aria-hidden="true" class="ico-wave w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18a4 4 0 0 1-.5-7.97A6 6 0 0 1 18 9a4.5 4.5 0 0 1-.5 9z"/><path d="M9 14.5h6"/></svg></div>
+        <span class="chip text-[13px]" style="background:#FDE2DD;color:#A33A2A">↑ 4.5%</span>
+      </div>
+      <div class="text-sm text-muted">02</div>
+      <div class="-mt-3 font-display text-xl" style="color:#4A3D96">ก๊าซเรือนกระจก</div>
+      <div class="flex items-baseline gap-1.5 flex-wrap mt-auto">
+        <span class="font-display font-semibold text-4xl leading-none tabular-nums" data-count="28.9" data-dec="1">0</span>
+        <span class="text-[15px] text-[#3E5553]">tCO₂e</span>
+      </div>
+      <div class="text-xs text-muted">เทียบเดือนก่อน</div>
+    </div>
+    <div class="hover-lift rounded-[26px] p-5 flex flex-col gap-3 min-h-[220px]" style="background:#FFF2C2">
+      <div class="flex justify-between items-start">
+        <div class="ico-bg w-14 h-14 rounded-[18px] bg-white flex items-center justify-center" style="color:#7A5800"><svg aria-hidden="true" class="ico-wave w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></div>
+        <span class="chip text-[13px]" style="background:#FDE2DD;color:#A33A2A">↑ 4.5%</span>
+      </div>
+      <div class="text-sm text-muted">03</div>
+      <div class="-mt-3 font-display text-xl" style="color:#7A5800">ไฟฟ้า</div>
+      <div class="flex items-baseline gap-1.5 flex-wrap mt-auto">
+        <span class="font-display font-semibold text-4xl leading-none tabular-nums" data-count="50730" data-dec="0">0</span>
+        <span class="text-[15px] text-[#3E5553]">kWh</span>
+      </div>
+      <div class="text-xs text-muted">เทียบเดือนก่อน</div>
+    </div>
+    <div class="hover-lift rounded-[26px] p-5 flex flex-col gap-3 min-h-[220px]" style="background:#DCF0FA">
+      <div class="flex justify-between items-start">
+        <div class="ico-bg w-14 h-14 rounded-[18px] bg-white flex items-center justify-center" style="color:#155E80"><svg aria-hidden="true" class="ico-wave w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.7s6 6.4 6 11.3a6 6 0 0 1-12 0c0-4.9 6-11.3 6-11.3z"/></svg></div>
+        <span class="chip text-[13px]" style="background:#FDE2DD;color:#A33A2A">↑ 4.6%</span>
+      </div>
+      <div class="text-sm text-muted">04</div>
+      <div class="-mt-3 font-display text-xl" style="color:#155E80">น้ำ</div>
+      <div class="flex items-baseline gap-1.5 flex-wrap mt-auto">
+        <span class="font-display font-semibold text-4xl leading-none tabular-nums" data-count="1946" data-dec="0">0</span>
+        <span class="text-[15px] text-[#3E5553]">ลบ.ม.</span>
+      </div>
+      <div class="text-xs text-muted">เทียบเดือนก่อน</div>
+    </div>
+    <div class="hover-lift rounded-[26px] p-5 flex flex-col gap-3 min-h-[220px]" style="background:#FBE3E3">
+      <div class="flex justify-between items-start">
+        <div class="ico-bg w-14 h-14 rounded-[18px] bg-white flex items-center justify-center" style="color:#962B38"><svg aria-hidden="true" class="ico-wave w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg></div>
+        <span class="chip text-[13px]" style="background:#FDE2DD;color:#A33A2A">↑ 4.7%</span>
+      </div>
+      <div class="text-sm text-muted">05</div>
+      <div class="-mt-3 font-display text-xl" style="color:#962B38">กระดาษ</div>
+      <div class="flex items-baseline gap-1.5 flex-wrap mt-auto">
+        <span class="font-display font-semibold text-4xl leading-none tabular-nums" data-count="90" data-dec="0">0</span>
+        <span class="text-[15px] text-[#3E5553]">รีม</span>
+      </div>
+      <div class="text-xs text-muted">เทียบเดือนก่อน</div>
+    </div>
+  </div>
+  <p class="mt-3.5 text-sm text-[#5D716F]">ก๊าซเรือนกระจกคำนวณจากน้ำมันและไฟฟ้า (Scope 1+2) ด้วยค่าการปล่อยที่กำหนดในระบบหลังบ้าน</p>
+</section>
+
+<!-- ===== Participation from the intro game ===== -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 py-12">
+  <div class="relative overflow-hidden bg-ku text-white rounded-[36px] p-8 sm:p-10">
+    <div aria-hidden="true" class="anim-blob absolute -right-28 -top-28 w-[360px] h-[360px] bg-ku-mid"></div>
+    <div class="relative flex flex-wrap gap-8 items-end justify-between mb-7">
+      <div class="max-w-2xl">
+        <div class="text-sm text-lime font-semibold tracking-wide">ผลจากเกม Green Check-in</div>
+        <h2 class="font-display font-medium text-4xl leading-tight mt-1 mb-2">คุณกับเพื่อนอีก <span data-count="0" data-part="players">0</span> คน กำลังทำเรื่องเหล่านี้</h2>
+        <p class="text-[#CFE8E4]">ตัวเลขอัปเดตทันทีที่มีคนเล่นเกมหน้าแรกจบ</p>
+      </div>
+      <button type="button" data-play class="btn-sun font-display font-normal">เล่นเกมอีกรอบ</button>
+    </div>
+    <div class="relative grid gap-3.5 [grid-template-columns:repeat(auto-fit,minmax(220px,1fr))]">
+      <div class="hover-lift bg-white/10 border border-white/15 rounded-[22px] p-5 flex flex-col gap-2.5">
+        <span class="font-display text-lg">ปิดไฟ-แอร์</span>
+        <div class="font-display text-[40px] leading-none text-lime"><span data-count="0" data-part="a_elec-pct">0</span>%</div>
+        <div class="h-2 rounded-full bg-white/15 overflow-hidden"><div class="grow-bar h-full bg-lime rounded-full" data-w="0" data-part="a_elec-bar"></div></div>
+        <div class="text-sm text-[#CFE8E4]"><span data-count="0" data-part="a_elec-count">0</span> คนทำประจำหรือบางครั้ง</div>
+      </div>
+      <div class="hover-lift bg-white/10 border border-white/15 rounded-[22px] p-5 flex flex-col gap-2.5">
+        <span class="font-display text-lg">พกแก้ว/ขวดน้ำ</span>
+        <div class="font-display text-[40px] leading-none text-lime"><span data-count="0" data-part="a_plastic-pct">0</span>%</div>
+        <div class="h-2 rounded-full bg-white/15 overflow-hidden"><div class="grow-bar h-full bg-lime rounded-full" data-w="0" data-part="a_plastic-bar"></div></div>
+        <div class="text-sm text-[#CFE8E4]"><span data-count="0" data-part="a_plastic-count">0</span> คนทำประจำหรือบางครั้ง</div>
+      </div>
+      <div class="hover-lift bg-white/10 border border-white/15 rounded-[22px] p-5 flex flex-col gap-2.5">
+        <span class="font-display text-lg">ลดการปริ้นต์</span>
+        <div class="font-display text-[40px] leading-none text-lime"><span data-count="0" data-part="a_paper-pct">0</span>%</div>
+        <div class="h-2 rounded-full bg-white/15 overflow-hidden"><div class="grow-bar h-full bg-lime rounded-full" data-w="0" data-part="a_paper-bar"></div></div>
+        <div class="text-sm text-[#CFE8E4]"><span data-count="0" data-part="a_paper-count">0</span> คนทำประจำหรือบางครั้ง</div>
+      </div>
+      <div class="hover-lift bg-white/10 border border-white/15 rounded-[22px] p-5 flex flex-col gap-2.5">
+        <span class="font-display text-lg">เดิน ปั่น ขนส่งสาธารณะ</span>
+        <div class="font-display text-[40px] leading-none text-lime"><span data-count="0" data-part="a_commute-pct">0</span>%</div>
+        <div class="h-2 rounded-full bg-white/15 overflow-hidden"><div class="grow-bar h-full bg-lime rounded-full" data-w="0" data-part="a_commute-bar"></div></div>
+        <div class="text-sm text-[#CFE8E4]"><span data-count="0" data-part="a_commute-count">0</span> คนทำประจำหรือบางครั้ง</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Missions + evidence hub ===== -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 pb-12 flex flex-wrap gap-5">
+  <div class="flex-[2_1_560px] bg-[#EEF6E6] rounded-[30px] p-7">
+    <div class="flex justify-between items-center gap-3 flex-wrap mb-4">
+      <h2 class="font-display font-medium text-[28px]">ภารกิจเดือนนี้</h2>
+      <a href="operations.php" class="text-ku font-semibold underline min-h-[44px] inline-flex items-center">ดูการดำเนินงานทั้งหมด →</a>
+    </div>
+    <div class="grid gap-3 [grid-template-columns:repeat(auto-fit,minmax(200px,1fr))]">
+      <div class="hover-lift bg-white rounded-[20px] p-4 flex flex-col gap-3">
+        <div class="font-semibold">ลดการใช้พลาสติกแบบใช้ครั้งเดียว</div>
+        <div class="h-2.5 rounded-full bg-[#EDF0EA] overflow-hidden"><div class="grow-bar h-full rounded-full" data-w="64" style="background:#9CCB3B"></div></div>
+        <div class="flex justify-between text-sm text-muted"><span>เป้า: งดแก้วพลาสติกทุกการประชุม</span><span class="font-semibold text-ink">64%</span></div>
+      </div>
+      <div class="hover-lift bg-white rounded-[20px] p-4 flex flex-col gap-3">
+        <div class="font-semibold">ปิดเมื่อไม่ใช้งาน</div>
+        <div class="h-2.5 rounded-full bg-[#EDF0EA] overflow-hidden"><div class="grow-bar h-full rounded-full" data-w="82" style="background:#FFC845"></div></div>
+        <div class="flex justify-between text-sm text-muted"><span>เป้า: ไฟฟ้าลด 5% จากเดือนก่อน</span><span class="font-semibold text-ink">82%</span></div>
+      </div>
+      <div class="hover-lift bg-white rounded-[20px] p-4 flex flex-col gap-3">
+        <div class="font-semibold">ใช้กระดาษอย่างคุ้มค่า</div>
+        <div class="h-2.5 rounded-full bg-[#EDF0EA] overflow-hidden"><div class="grow-bar h-full rounded-full" data-w="48" style="background:#7CC6E8"></div></div>
+        <div class="flex justify-between text-sm text-muted"><span>เป้า: ไม่เกิน 90 รีม/เดือน</span><span class="font-semibold text-ink">48%</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="hover-lift flex-[1_1_320px] bg-[#FFF2C2] rounded-[30px] p-7 flex flex-col gap-3.5 relative overflow-hidden">
+    <svg aria-hidden="true" class="anim-float absolute right-5 top-5 w-20 h-20 text-[#E0A800]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+    <h2 class="font-display font-medium text-[26px] max-w-[220px] leading-tight">ศูนย์รวมหลักฐานสำหรับการประเมิน</h2>
+    <p class="text-[#5A4A10]">เอกสาร รูปภาพ และข้อมูลกิจกรรม จัดครบ 7 หมวดตามเกณฑ์ Green Office</p>
+    <div class="font-display text-[40px] leading-none"><span data-count="5">0</span><span class="text-base text-[#5A4A10]"> รายการ</span></div>
+    <a href="operations.php" class="mt-auto self-start btn-dark">ดูตามหมวด →</a>
+  </div>
+</section>
+
+<!-- ===== News ===== -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 pb-16">
+  <div class="flex justify-between items-center gap-3 flex-wrap mb-5">
+    <h2 class="font-display font-medium text-[32px]">ข่าวและกิจกรรม</h2>
+    <a href="news.php" class="text-ku font-semibold underline min-h-[44px] inline-flex items-center">ดูทั้งหมด →</a>
+  </div>
+  <div class="grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(250px,1fr))]">
+    <a href="news-view.php?id=1" class="hover-lift bg-white rounded-3xl overflow-hidden flex flex-col text-ink no-underline">
+      <div class="h-40 flex items-center justify-center" style="background:#CFE7C2;color:#2F6B1F"><span class="ico-bg"><svg aria-hidden="true" class="w-14 h-14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19c0-8 5-14 15-15-1 10-7 15-15 15z"/><path d="M5 19 13 11"/></svg></span></div>
+      <div class="p-5 flex flex-col gap-2 flex-1">
+        <span class="chip self-start" style="background:#E2F1DC;color:#2F6B1F">กิจกรรม</span>
+        <h3 class="text-[17px] font-semibold leading-snug">ปลูกต้นไม้ เพิ่มพื้นที่สีเขียวในคณะ</h3>
+        <p class="text-sm text-muted">ร่วมกันเพิ่มพื้นที่สีเขียว สร้างร่มเงาให้กับอนาคต</p>
+        <span class="mt-auto pt-1 text-xs text-muted">19 ต.ค. 2569</span>
+      </div>
+    </a>
+    <a href="news-view.php?id=2" class="hover-lift bg-white rounded-3xl overflow-hidden flex flex-col text-ink no-underline">
+      <div class="h-40 flex items-center justify-center" style="background:#BFE0DD;color:#00605E"><span class="ico-bg"><svg aria-hidden="true" class="w-14 h-14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19c0-8 5-14 15-15-1 10-7 15-15 15z"/><path d="M5 19 13 11"/></svg></span></div>
+      <div class="p-5 flex flex-col gap-2 flex-1">
+        <span class="chip self-start" style="background:#DCEEF0;color:#00605E">ข่าวสาร</span>
+        <h3 class="text-[17px] font-semibold leading-snug">งดใช้แก้วพลาสติกในการประชุม</h3>
+        <p class="text-sm text-muted">เริ่มจากการประชุมเล็ก ๆ สู่การเปลี่ยนแปลงที่ยิ่งใหญ่</p>
+        <span class="mt-auto pt-1 text-xs text-muted">12 ต.ค. 2569</span>
+      </div>
+    </a>
+    <a href="news-view.php?id=3" class="hover-lift bg-white rounded-3xl overflow-hidden flex flex-col text-ink no-underline">
+      <div class="h-40 flex items-center justify-center" style="background:#CFE7C2;color:#2F6B1F"><span class="ico-bg"><svg aria-hidden="true" class="w-14 h-14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19c0-8 5-14 15-15-1 10-7 15-15 15z"/><path d="M5 19 13 11"/></svg></span></div>
+      <div class="p-5 flex flex-col gap-2 flex-1">
+        <span class="chip self-start" style="background:#E2F1DC;color:#2F6B1F">กิจกรรม</span>
+        <h3 class="text-[17px] font-semibold leading-snug">แยกขยะให้ถูกที่ เพื่อโลกที่สะอาดขึ้น</h3>
+        <p class="text-sm text-muted">กิจกรรมรณรงค์การแยกขยะภายในคณะ</p>
+        <span class="mt-auto pt-1 text-xs text-muted">5 ต.ค. 2569</span>
+      </div>
+    </a>
+    <a href="news-view.php?id=4" class="hover-lift bg-white rounded-3xl overflow-hidden flex flex-col text-ink no-underline">
+      <div class="h-40 flex items-center justify-center" style="background:#BFE0DD;color:#00605E"><span class="ico-bg"><svg aria-hidden="true" class="w-14 h-14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 19c0-8 5-14 15-15-1 10-7 15-15 15z"/><path d="M5 19 13 11"/></svg></span></div>
+      <div class="p-5 flex flex-col gap-2 flex-1">
+        <span class="chip self-start" style="background:#DCEEF0;color:#00605E">ข่าวสาร</span>
+        <h3 class="text-[17px] font-semibold leading-snug">Green Office Talk</h3>
+        <p class="text-sm text-muted">แชร์ไอเดีย สร้างแรงบันดาลใจสู่สำนักงานสีเขียว</p>
+        <span class="mt-auto pt-1 text-xs text-muted">28 ก.ย. 2569</span>
+      </div>
+    </a>
+  </div>
+</section>
+
+</main>
+
+<!-- Hero call-to-action band (every page) -->
+<section aria-label="ชวนเป็นฮีโร่สายกรีน" class="relative overflow-hidden bg-lime text-ink">
+  <div aria-hidden="true" class="absolute inset-0 dots"></div>
+  <div class="relative max-w-7xl mx-auto px-4 sm:px-6 py-14 flex flex-wrap gap-8 items-center">
+    <div class="flex-[2_1_460px] flex flex-col gap-5">
+      <span class="self-start -rotate-3 bg-ink text-lime px-3.5 py-1.5 rounded-lg font-display">ประกาศรับสมัครฮีโร่ · ไม่ต้องมีพลังพิเศษ</span>
+      <h2 class="font-display font-semibold text-[clamp(36px,5.4vw,66px)] leading-[1.08]">ไม่ต้องมีผ้าคลุม<br>ก็เป็น <span class="inline-block bg-white px-3.5 rounded-2xl -rotate-2 shadow-[5px_5px_0_#10302F]">ฮีโร่โลก</span> ได้</h2>
+      <p class="text-lg max-w-xl text-[#203F3E]">พลังของเราแค่ปิดไฟ พกแก้ว แยกขยะ — แต่ถ้าทั้งคณะทำพร้อมกัน นั่นคือพลังระดับจักรวาล</p>
+      <div class="flex flex-wrap gap-3">
+        <a href="operations.php" class="btn-dark text-lg font-display font-normal">รับภารกิจเลย</a>
+        <button type="button" class="btn bg-white border-[3px] border-ink font-display font-normal" data-tip-next>สุ่มภารกิจวันนี้</button>
+      </div>
+    </div>
+    <div class="flex-[1_1_320px] relative min-h-[360px] flex items-end justify-center" data-tips='["ปิดจอคอมตอนพักเที่ยง","พกแก้วไปซื้อกาแฟ 1 แก้ว","ส่งไฟล์แทนการปริ้นต์ 1 งาน","เดินขึ้นบันได 1 ชั้นแทนลิฟต์","แยกขวดพลาสติกให้ถูกถัง","ตั้งแอร์ 26°C แล้วเปิดพัดลมช่วย","ปิดก๊อกให้สนิทเมื่อล้างมือเสร็จ","ชวนเพื่อน 1 คนมาเล่นเกม Green Check-in"]'>
+      <div role="status" class="absolute left-0 top-0 max-w-[250px] bg-white border-[3px] border-ink rounded-3xl px-4 py-3 font-display text-lg leading-snug shadow-[6px_6px_0_#10302F] -rotate-2">
+        <span class="block text-sm text-ku">ภารกิจวันนี้ของคุณ</span><span data-tip-text>ปิดจอคอมตอนพักเที่ยง</span>
+      </div>
+      <span aria-hidden="true" class="anim-float absolute right-1.5 top-9 bg-sun border-[3px] border-ink rounded-full px-3 py-1 font-display rotate-6">+1 ใบไม้</span>
+      <span aria-hidden="true" class="anim-float absolute left-2.5 bottom-8 bg-white border-[3px] border-ink rounded-full px-3 py-1 font-display" style="animation-delay:-3s">ปิดไฟแล้ว!</span>
+      <button type="button" data-tip-next aria-label="กดน้องกล้าเพื่อสุ่มภารกิจ" class="bg-transparent border-0 p-0 cursor-pointer">
+        <span class="block anim-bob">
+          <svg role="img" aria-label="น้องกล้าในชุดฮีโร่" class="mascot w-[230px] h-[250px]" viewBox="0 0 240 260" style="overflow:visible">
+            <ellipse cx="120" cy="248" rx="70" ry="10" fill="#003D3C" opacity=".3"/>
+            <path d="M58 104 Q8 196 30 252 L120 228 L210 252 Q232 196 182 104z" fill="#E2725B" stroke="#10302F" stroke-width="4" stroke-linejoin="round"/>
+            <path d="M120 70 C120 50 118 38 112 26" stroke="#2E7D32" stroke-width="6" fill="none" stroke-linecap="round"/>
+            <path d="M112 30 C84 8 52 18 46 40 C72 48 98 46 112 30z" fill="#8FBF3A" stroke="#10302F" stroke-width="3"/>
+            <path d="M114 32 C134 2 176 4 188 26 C160 44 132 44 114 32z" fill="#6FA82E" stroke="#10302F" stroke-width="3"/>
+            <rect x="44" y="64" width="152" height="170" rx="76" fill="#E9F5EC" stroke="#10302F" stroke-width="4"/>
+            <path d="M70 116 Q92 104 112 116 L112 132 Q92 140 70 132z M128 116 Q148 104 170 116 L170 132 Q148 140 128 132z" fill="#10302F"/>
+            <path d="M112 120 L128 120" stroke="#10302F" stroke-width="4"/>
+            <circle class="js-pupil" data-cx="92" data-cy="124" cx="92" cy="124" r="4" fill="#ffffff"/>
+            <circle class="js-pupil" data-cx="148" data-cy="124" cx="148" cy="124" r="4" fill="#ffffff"/>
+            <circle cx="120" cy="198" r="16" fill="#FFC845" stroke="#10302F" stroke-width="3"/>
+            <path d="M113 199 l5 5 9-10" stroke="#10302F" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            <path class="arm" d="M190 140 Q222 112 222 78" stroke="#E9F5EC" stroke-width="18" fill="none" stroke-linecap="round"/>
+            <circle cx="222" cy="72" r="13" fill="#E9F5EC" stroke="#10302F" stroke-width="3"/>
+            <circle cx="72" cy="154" r="9" fill="#FF9E80" opacity=".55"/><circle cx="168" cy="154" r="9" fill="#FF9E80" opacity=".55"/>
+            <path d="M100 160 Q120 180 140 160" stroke="#10302F" stroke-width="5" fill="none" stroke-linecap="round"/>
+            <path d="M50 150 Q26 170 34 196" stroke="#E9F5EC" stroke-width="16" fill="none" stroke-linecap="round"/>
+          </svg>
+        </span>
+      </button>
+    </div>
+  </div>
+</section>
+
+<footer class="bg-ku-deep text-[#E6F3F1]">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 pt-12 pb-7 grid gap-8 [grid-template-columns:repeat(auto-fit,minmax(230px,1fr))]">
+    <div class="flex flex-col gap-3 items-start">
+      <img src="assets/img/logo.png" alt="AGR Green Office สำนักงานสีเขียว คณะเกษตร มก." class="w-28 h-28 object-contain bg-white rounded-full p-1.5">
+      <div class="font-display text-lg text-white leading-snug">สำนักงานสีเขียว<br>คณะเกษตร มหาวิทยาลัยเกษตรศาสตร์</div>
+    </div>
+    <div class="flex flex-col gap-2.5">
+      <h2 class="font-display text-xl text-lime mb-1">พูดคุยกับเรา</h2>
+      <p class="flex gap-2.5 leading-relaxed"><svg aria-hidden="true" class="w-5 h-5 flex-none mt-0.5" viewBox="0 0 24 24" fill="none" stroke="#C5E063" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg><span>คณะเกษตร มหาวิทยาลัยเกษตรศาสตร์<br>50 ถนนงามวงศ์วาน แขวงลาดยาว เขตจตุจักร กรุงเทพฯ 10900</span></p>
+      <a href="https://agr.ku.ac.th" target="_blank" rel="noopener" class="flex gap-2.5 items-center text-white underline-offset-4 hover:underline min-h-[32px]"><svg aria-hidden="true" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="#C5E063" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/></svg>agr.ku.ac.th</a>
+      <a href="tel:" class="flex gap-2.5 items-center min-h-[32px] text-white hover:underline"><svg aria-hidden="true" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="#C5E063" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg>[เบอร์โทรสำนักงาน]</a>
+      <a href="mailto:[อีเมลสำนักงาน]" class="flex gap-2.5 items-center min-h-[32px] text-white hover:underline"><svg aria-hidden="true" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="#C5E063" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>[อีเมลสำนักงาน]</a>
+    </div>
+    <div class="flex flex-col gap-1 items-start">
+      <h2 class="font-display text-xl text-lime mb-2">ข้อร้องเรียนด้านสิ่งแวดล้อม</h2>
+      <a href="feedback.php" class="min-h-[44px] flex items-center text-white underline underline-offset-4">ข้อคิดเห็นและข้อร้องเรียนทางด้านสิ่งแวดล้อม</a>
+      <a href="complaints.php" class="min-h-[44px] flex items-center text-white underline underline-offset-4">ประกาศข้อร้องเรียน</a>
+      <a href="complaint-plan.php" class="min-h-[44px] flex items-center text-white underline underline-offset-4">แผนการจัดการข้อร้องเรียน</a>
+    </div>
+    <div class="flex flex-col gap-1 items-start">
+      <h2 class="font-display text-xl text-lime mb-2">เมนู</h2>
+      <a href="index.php" class="min-h-[40px] flex items-center hover:text-white">หน้าแรก</a>
+      <a href="about.php" class="min-h-[40px] flex items-center hover:text-white">เกี่ยวกับเรา</a>
+      <a href="operations.php" class="min-h-[40px] flex items-center hover:text-white">การดำเนินงาน</a>
+      <a href="stats.php" class="min-h-[40px] flex items-center hover:text-white">สถิติการใช้ทรัพยากร</a>
+      <a href="news.php" class="min-h-[40px] flex items-center hover:text-white">ข่าวสารและกิจกรรม</a>
+    </div>
+  </div>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 border-t border-white/10 text-sm text-[#A9C9C5] flex flex-wrap gap-3 justify-between">
+    <span>© 2569 Green Office · คณะเกษตร มหาวิทยาลัยเกษตรศาสตร์</span>
+    <a href="admin/" class="underline">สำหรับผู้ดูแลระบบ</a>
+  </div>
+</footer>
+<script src="assets/js/app.js"></script>
+</body>
+</html>
