@@ -9,6 +9,7 @@ $menu = [
     'documents'  => ['เอกสารเกี่ยวกับเรา', 'documents.php', ['editor']],
     'activities' => ['จัดการแผนและกิจกรรม', 'activities.php', ['editor', 'staff']],
     'stats'      => ['จัดการสถิติ', 'stats.php', ['staff']],
+    'criteria'   => ['จัดการข้อกำหนด 7 หมวด', 'criteria.php', ['editor']],
     'reports'    => ['รายงานผล & หลักฐาน 7 หมวด', 'reports.php', ['staff', 'auditor', 'editor']],
     'audits'     => ['ตรวจประเมินและติดตามแก้ไข', 'audits.php', ['auditor']],
     'complaints' => ['ข้อร้องเรียน', 'complaints.php', ['editor']],
