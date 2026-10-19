@@ -1,0 +1,6 @@
+# Raises PHP's own caps to match config.php's 'upload_max_mb' (10 MB), for setups
+# without Docker (XAMPP, shared hosting) — only works under Apache + mod_php.
+<IfModule mod_php.c>
+  php_value upload_max_filesize 10M
+  php_value post_max_size 12M
+</IfModule>

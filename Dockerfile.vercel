@@ -3,6 +3,8 @@ FROM dunglas/frankenphp:1-php8.3-alpine
 RUN apk add --no-cache postgresql-dev \
     && docker-php-ext-install pdo_pgsql pgsql
 
+COPY docker-php-uploads.ini /usr/local/etc/php/conf.d/zz-uploads.ini
+
 WORKDIR /app
 
 # app/, config/, database/ are never reachable — the Caddyfile's web root is

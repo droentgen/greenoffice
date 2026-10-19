@@ -15,7 +15,7 @@ $cfg = [
     "base_url"      => getenv("BASE_URL") ?: "",
     "debug"         => getenv("APP_DEBUG") === "true",
     "timezone"      => "Asia/Bangkok",
-    "upload_max_mb" => 20,
+    "upload_max_mb" => 10,
 ];
 file_put_contents("/var/www/html/config/config.php", "<?php\nreturn " . var_export($cfg, true) . ";\n");
 '

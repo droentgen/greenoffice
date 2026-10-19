@@ -27,5 +27,5 @@ return [
 
     // Largest upload allowed for documents and images (MB).
     // PHP's own upload_max_filesize / post_max_size must also allow this.
-    'upload_max_mb' => 20,
+    'upload_max_mb' => 10,
 ];
