@@ -28,8 +28,8 @@ $nav = [
     <a href="<?= e(url('index.php')) ?>" class="flex items-center gap-3 no-underline text-ink">
       <img src="<?= e(url('assets/img/logo.png')) ?>" alt="" class="w-14 h-14 object-contain">
       <span class="leading-tight">
-        <span class="block font-display font-semibold text-ku text-lg">GREEN OFFICE</span>
-        <span class="block text-xs text-muted">คณะเกษตร ม.เกษตรศาสตร์</span>
+        <span class="font-display font-semibold text-ku text-xl">GREEN OFFICE</span>
+        <span class="font-display text-sm text-muted">คณะเกษตร มหาวิทยาลัยเกษตรศาสตร์</span>
       </span>
     </a>
     <nav aria-label="เมนูหลัก" class="hidden lg:flex flex-1 justify-center gap-1">
