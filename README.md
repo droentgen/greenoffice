@@ -16,6 +16,22 @@
    - **ผ่าน Terminal**: `php database/install.php` (สร้างตารางและใส่ข้อมูลให้อัตโนมัติ, เพิ่ม `--no-sample` ถ้าไม่ต้องการข้อมูลตัวอย่าง)
 5. รัน `php -S localhost:8000 -t public` แล้วเปิด http://localhost:8000
 
+## ขึ้นเว็บจริงด้วย Railway
+โปรเจกต์นี้มี `Dockerfile` พร้อมใช้ (PHP 8.2 + Apache + `pdo_pgsql`, web root ชี้ไปที่ `public/` ให้แล้ว)
+
+1. ที่ https://railway.app/ → New Project → Deploy from GitHub repo → เลือก repo นี้ (Railway จะเจอ `Dockerfile` แล้วใช้ build ให้เอง)
+2. ไปที่ service → Variables แล้วเพิ่ม environment variables ตามค่าเชื่อม Supabase (Connection pooler):
+   - `DB_HOST` เช่น `aws-0-ap-northeast-1.pooler.supabase.com`
+   - `DB_PORT` = `5432`
+   - `DB_NAME` = `postgres`
+   - `DB_USER` เช่น `postgres.<project-ref>`
+   - `DB_PASS` = รหัสผ่านฐานข้อมูล
+   - `APP_DEBUG` = `false` (ไม่ต้องตั้งก็ได้ ค่า default คือ false)
+3. Railway จะ deploy อัตโนมัติ — `docker-entrypoint.sh` จะสร้าง `config/config.php` จาก environment variables เหล่านี้ตอนคอนเทนเนอร์เริ่มทำงาน (ไฟล์นี้จึงไม่เคยถูก commit หรือ bake เข้าไปใน image)
+4. เปิด URL ที่ Railway ให้มา — ควรขึ้นหน้าแรกของเว็บได้ทันที (ไม่ใช่หน้าดาวน์โหลดไฟล์ .php แบบที่เกิดกับ Vercel เพราะ Vercel ไม่มี PHP runtime)
+
+**ข้อควรรู้**: ไฟล์ที่อัปโหลดผ่านระบบหลังบ้าน (`public/uploads/`) จะหายไปเมื่อ redeploy เพราะ container เป็น ephemeral filesystem — ถ้าต้องใช้งานจริงจังต้องเพิ่ม persistent volume หรือย้ายไปเก็บที่ Supabase Storage/S3 แทน
+
 ## เข้าระบบหลังบ้าน
 - URL: `/admin/`
 - ชื่อผู้ใช้ **admin** · รหัสผ่าน **green2569**
