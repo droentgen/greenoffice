@@ -17,7 +17,7 @@ require __DIR__ . '/../app/views/public_top.php';
     <span class="chip self-start bg-mint text-ku"><?= e($n['category']) ?></span>
     <h1 class="font-display font-semibold text-[clamp(28px,4vw,44px)] leading-tight"><?= e($n['title']) ?></h1>
     <div class="text-sm text-muted"><?= e(thai_date($n['published_at'])) ?></div>
-    <?php if ($n['image_path']): ?><img src="<?= e(url($n['image_path'])) ?>" alt="" class="w-full rounded-3xl"><?php endif; ?>
+    <?php if ($n['image_path']): ?><img src="<?= e(upload_url($n['image_path'])) ?>" alt="" class="w-full rounded-3xl"><?php endif; ?>
     <div class="text-[17px] leading-loose whitespace-pre-line"><?= e($n['body']) ?></div>
   <?php endif; ?>
 </article>

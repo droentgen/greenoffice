@@ -180,7 +180,7 @@ const DOC_SECTIONS = [
 /** Where a document opens: uploaded file or external link. */
 function doc_href(array $d): string
 {
-    return $d['file_path'] ? url($d['file_path']) : (string)$d['external_url'];
+    return $d['file_path'] ? upload_url($d['file_path']) : (string)$d['external_url'];
 }
 
 /* ---------- Intro game ---------- */

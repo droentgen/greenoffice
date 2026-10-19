@@ -16,7 +16,9 @@ After changing seed data in `database/install.php`, regenerate the SQL for the S
 - `public/` is the web root. Each page is one PHP file: load `app/bootstrap.php`, query, then include
   `app/views/public_top.php` … `public_bottom.php` (or `admin_top.php` … `admin_bottom.php`).
 - `app/db.php` — `q()`, `rows()`, `row()`, `val()`; always pass values as `?` params.
-- `app/helpers.php` — `e()` escape, `url()`, `redirect()`, `csrf_field()/csrf_check()`, `flash()`, `setting()`, `save_upload()`, `clean_url()`.
+- `app/helpers.php` — `e()` escape, `url()`, `redirect()`, `csrf_field()/csrf_check()`, `flash()`, `setting()`,
+  `save_upload()`/`delete_upload()`/`upload_url()` (files live in Supabase Storage, not local disk — see `storage_put()`), `clean_url()`.
+- `app/session_db.php` — PHP sessions stored in Postgres (`app_sessions` table), not local disk; registered in `app/bootstrap.php`.
 - `app/auth.php` — `require_login(['role', ...])` at the top of every admin page (admin always allowed).
 - `app/data.php` — shared queries: resources (GHG computed from fuel + electricity × factors in settings),
   7-category criteria (`category_table()`, `category_progress()`), complaints, intro game stats.
@@ -27,13 +29,13 @@ After changing seed data in `database/install.php`, regenerate the SQL for the S
 - Escape every output with `e()`; never build SQL with string concatenation of user input.
 - Every form that changes data: `<?= csrf_field() ?>` in the form and `csrf_check()` on POST.
 - Admin pages must call `require_login()` first.
-- Uploads only through `save_upload()` (whitelisted extensions, MIME checked).
+- Uploads only through `save_upload()` (whitelisted extensions, MIME checked, stored in Supabase Storage).
 - Never show complaint `name`/`contact` on public pages; public pages use `public_title`/`public_detail` only.
 - Resource order on the site is fixed: fuel → GHG → electricity → water → paper (`resource_meta()`).
 - Keep pages mobile-friendly (flex-wrap / auto-fit grids, tables inside `overflow-x-auto`) and touch targets ≥ 44px.
 
 ## Database (see database/schema.sql)
-users, settings, resource_monthly, categories, criteria_issues, criteria_indicators, criteria_subitems,
+users, settings, app_sessions (PHP session storage), resource_monthly, categories, criteria_issues, criteria_indicators, criteria_subitems,
 criteria_reports (one per indicator per year; checks_json = finished sub-items), criteria_evidence (links),
 news, documents (about tabs + complaint plan; pdf/image/link), missions, activities, audit_findings,
 complaints, complaint_plan_steps, game_responses.

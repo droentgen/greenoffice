@@ -10,27 +10,39 @@
 ## ตั้งค่า Supabase
 1. สร้างโปรเจกต์ใหม่ที่ https://supabase.com/
 2. ไปที่ Project Settings › Database แล้วคัดลอก connection info (host, port, database, user, password — ใช้ค่าจาก connection pooler ถ้ามี)
-3. คัดลอก `config/config.sample.php` เป็น `config/config.php` แล้วใส่ค่าที่คัดลอกมา
-4. สร้างตาราง + ข้อมูลเริ่มต้น เลือกวิธีใดวิธีหนึ่ง
+3. สร้าง Storage bucket สำหรับไฟล์อัปโหลด (รูปข่าว/เอกสาร): Storage → New bucket → ตั้งชื่อ `uploads` → เปิด **Public bucket**
+4. ไปที่ Project Settings › API แล้วคัดลอกคีย์ **service_role** (ไม่ใช่ anon/publishable) — ใช้สำหรับอัปโหลดไฟล์จากฝั่งเซิร์ฟเวอร์เท่านั้น เก็บเป็นความลับเหมือนรหัสผ่าน DB
+5. คัดลอก `config/config.sample.php` เป็น `config/config.php` แล้วใส่ค่าที่คัดลอกมาทั้งหมด (`db` และ `storage`)
+6. สร้างตาราง + ข้อมูลเริ่มต้น เลือกวิธีใดวิธีหนึ่ง
    - **ผ่าน Supabase SQL Editor**: วางเนื้อหา `database/schema.sql` แล้วรัน → วางเนื้อหา `database/seed.sql` แล้วรัน
    - **ผ่าน Terminal**: `php database/install.php` (สร้างตารางและใส่ข้อมูลให้อัตโนมัติ, เพิ่ม `--no-sample` ถ้าไม่ต้องการข้อมูลตัวอย่าง)
-5. รัน `php -S localhost:8000 -t public` แล้วเปิด http://localhost:8000
+7. รัน `php -S localhost:8000 -t public` แล้วเปิด http://localhost:8000
 
 ## ขึ้นเว็บจริงด้วย Railway
 โปรเจกต์นี้มี `Dockerfile` พร้อมใช้ (PHP 8.2 + Apache + `pdo_pgsql`, web root ชี้ไปที่ `public/` ให้แล้ว)
 
 1. ที่ https://railway.app/ → New Project → Deploy from GitHub repo → เลือก repo นี้ (Railway จะเจอ `Dockerfile` แล้วใช้ build ให้เอง)
-2. ไปที่ service → Variables แล้วเพิ่ม environment variables ตามค่าเชื่อม Supabase (Connection pooler):
+2. ไปที่ service → Variables แล้วเพิ่ม environment variables:
    - `DB_HOST` เช่น `aws-0-ap-northeast-1.pooler.supabase.com`
    - `DB_PORT` = `5432`
    - `DB_NAME` = `postgres`
    - `DB_USER` เช่น `postgres.<project-ref>`
    - `DB_PASS` = รหัสผ่านฐานข้อมูล
+   - `SUPABASE_URL` เช่น `https://<project-ref>.supabase.co`
+   - `SUPABASE_SERVICE_KEY` = คีย์ service_role (Project Settings › API)
+   - `SUPABASE_BUCKET` = `uploads` (ไม่ต้องตั้งก็ได้ ค่า default คือ `uploads`)
    - `APP_DEBUG` = `false` (ไม่ต้องตั้งก็ได้ ค่า default คือ false)
 3. Railway จะ deploy อัตโนมัติ — `docker-entrypoint.sh` จะสร้าง `config/config.php` จาก environment variables เหล่านี้ตอนคอนเทนเนอร์เริ่มทำงาน (ไฟล์นี้จึงไม่เคยถูก commit หรือ bake เข้าไปใน image)
 4. เปิด URL ที่ Railway ให้มา — ควรขึ้นหน้าแรกของเว็บได้ทันที (ไม่ใช่หน้าดาวน์โหลดไฟล์ .php แบบที่เกิดกับ Vercel เพราะ Vercel ไม่มี PHP runtime)
 
-**ข้อควรรู้**: ไฟล์ที่อัปโหลดผ่านระบบหลังบ้าน (`public/uploads/`) จะหายไปเมื่อ redeploy เพราะ container เป็น ephemeral filesystem — ถ้าต้องใช้งานจริงจังต้องเพิ่ม persistent volume หรือย้ายไปเก็บที่ Supabase Storage/S3 แทน
+## ขึ้นเว็บจริงด้วย Vercel
+โปรเจกต์นี้มี `Dockerfile.vercel` (FrankenPHP + `pdo_pgsql`) + `Caddyfile` + `vercel.json` พร้อมใช้ — Vercel รองรับ PHP ผ่าน Docker/container runtime แบบนี้โดยเฉพาะ (วิธีเก่าที่อัปโหลดไฟล์ .php ตรงๆใช้ไม่ได้ เพราะ Vercel ไม่มี PHP runtime ให้ในตัว)
+
+1. ลิงก์ GitHub repo นี้เข้า Vercel project (Vercel จะเจอ `vercel.json` แล้ว build จาก `Dockerfile.vercel` ให้เอง)
+2. Settings → Environment Variables → เพิ่มตัวแปรชุดเดียวกับ Railway ด้านบนทั้งหมด (`DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASS`, `SUPABASE_URL`, `SUPABASE_SERVICE_KEY`, `SUPABASE_BUCKET`)
+3. Deploy แล้วเปิด URL ที่ได้มา
+
+**เรื่อง session/CSRF และไฟล์อัปโหลด**: เนื่องจาก Vercel อาจรันแต่ละ request บน container คนละตัว โปรเจกต์นี้จึงเก็บ PHP session ไว้ใน Postgres (ตาราง `app_sessions`, ดู `app/session_db.php`) และเก็บไฟล์อัปโหลดไว้ใน Supabase Storage (ดู `storage_put()`/`storage_delete()`/`upload_url()` ใน `app/helpers.php`) แทนดิสก์ในเครื่อง ไม่ต้องตั้งค่าเพิ่มอะไร — ใช้ environment variables ชุดข้างบนครบแล้วทำงานได้เลย
 
 ## เข้าระบบหลังบ้าน
 - URL: `/admin/`

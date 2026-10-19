@@ -15,6 +15,19 @@ return [
         'pass' => '',
     ],
 
+    // Uploaded files (documents, news images) live in Supabase Storage, not
+    // local disk — every deploy target here can run a request on a fresh
+    // container with no shared filesystem.
+    // Create a bucket (Supabase dashboard → Storage), set it to Public, and
+    // get 'service_key' from Project Settings › API › service_role (NOT the
+    // anon/publishable key — that one can't write to storage without RLS
+    // policies). Keep it as secret as a database password.
+    'storage' => [
+        'url'         => '', // e.g. https://wqyhouvzddtmbjotnohm.supabase.co
+        'bucket'      => 'uploads',
+        'service_key' => '',
+    ],
+
     // URL path of the public/ folder.
     // null  = detect automatically (works for XAMPP: http://localhost/green-office/public/)
     // ''    = public/ is the web server's document root (recommended on a real server)

@@ -9,7 +9,7 @@ $tagStyle = ['กิจกรรม' => ['#E2F1DC', '#2F6B1F', '#CFE7C2'], 'ข�
   <?php foreach ($news as $n): $ts = $tagStyle[$n['category']] ?? $tagStyle['ข่าวสาร']; ?>
     <a href="<?= e(url('news-view.php?id=' . $n['id'])) ?>" class="hover-lift bg-white rounded-3xl overflow-hidden flex flex-col text-ink no-underline">
       <?php if ($n['image_path']): ?>
-        <img src="<?= e(url($n['image_path'])) ?>" alt="" class="h-40 w-full object-cover">
+        <img src="<?= e(upload_url($n['image_path'])) ?>" alt="" class="h-40 w-full object-cover">
       <?php else: ?>
         <div class="h-40 flex items-center justify-center" style="background:<?= e($ts[2]) ?>;color:<?= e($ts[1]) ?>"><span class="ico-bg"><?= leaf_icon('w-14 h-14') ?></span></div>
       <?php endif; ?>

@@ -64,7 +64,7 @@ require __DIR__ . '/../../app/views/admin_top.php';
   <label class="label">สรุปสั้น (แสดงบนการ์ด)<input type="text" name="summary" value="<?= e($editing['summary']) ?>" maxlength="500" class="input"></label>
   <label class="label">เนื้อหา<textarea name="body" rows="10" class="input leading-relaxed"><?= e($editing['body']) ?></textarea></label>
   <label class="label">รูปภาพหน้าปก (JPG / PNG / WEBP)<input type="file" name="image" accept=".jpg,.jpeg,.png,.webp" class="input py-2.5"></label>
-  <?php if (!empty($editing['image_path'])): ?><img src="<?= e(url($editing['image_path'])) ?>" alt="" class="w-48 rounded-xl"><?php endif; ?>
+  <?php if (!empty($editing['image_path'])): ?><img src="<?= e(upload_url($editing['image_path'])) ?>" alt="" class="w-48 rounded-xl"><?php endif; ?>
   <div class="flex gap-2.5"><button class="btn-primary">บันทึก</button><a href="<?= e(url('admin/news.php')) ?>" class="btn-outline">ยกเลิก</a></div>
 </form>
 <?php else: ?>

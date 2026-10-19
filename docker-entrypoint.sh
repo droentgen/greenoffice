@@ -12,6 +12,11 @@ $cfg = [
         "user" => getenv("DB_USER") ?: "postgres",
         "pass" => getenv("DB_PASS") ?: "",
     ],
+    "storage" => [
+        "url"         => getenv("SUPABASE_URL") ?: "",
+        "bucket"      => getenv("SUPABASE_BUCKET") ?: "uploads",
+        "service_key" => getenv("SUPABASE_SERVICE_KEY") ?: "",
+    ],
     "base_url"      => getenv("BASE_URL") ?: "",
     "debug"         => getenv("APP_DEBUG") === "true",
     "timezone"      => "Asia/Bangkok",
