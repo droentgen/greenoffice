@@ -22,9 +22,13 @@ foreach ($docs as $d) {
 }
 $doc = $doc ?? ($docs[0] ?? null);
 
-$videoUrl = setting('video_url');
-$embed = $videoUrl ? youtube_embed($videoUrl) : null;
-$isVideoFile = $videoUrl && preg_match('/\.(mp4|webm)$/i', $videoUrl);
+$videoType = setting('video_type', 'youtube');
+$videoSrc = $videoType === 'mp4' && setting('video_path') ? upload_url(setting('video_path')) : null;
+$embed = match ($videoType) {
+    'drive' => drive_embed(setting('video_url')),
+    'other' => clean_url(setting('video_url')),
+    default => youtube_embed(setting('video_url')), // 'youtube', and the fallback for older sites
+};
 
 $joinWays = [
     ['1', 'สมัคร Green Ambassador', 'เป็นแกนนำสายกรีนประจำภาควิชาหรือชั้นปี ช่วยชวนเพื่อนทำภารกิจ', 'ดูประกาศรับสมัคร', 'news.php?cat=ประกาศ', '#FFF2C2'],
@@ -95,16 +99,16 @@ require __DIR__ . '/../app/views/public_top.php';
   <section aria-label="คลิปสรุปการดำเนินงาน" class="flex flex-wrap gap-5 items-stretch">
     <div class="flex-[3_1_520px] min-w-0">
       <div class="relative aspect-video rounded-[30px] overflow-hidden bg-ku-deep text-white">
-        <?php if ($embed): ?>
+        <?php if ($videoSrc): ?>
+          <video src="<?= e($videoSrc) ?>" controls class="absolute inset-0 w-full h-full"></video>
+        <?php elseif ($embed): ?>
           <iframe src="<?= e($embed) ?>" title="<?= e(setting('video_title')) ?>" class="absolute inset-0 w-full h-full" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-        <?php elseif ($isVideoFile): ?>
-          <video src="<?= e($videoUrl) ?>" controls class="absolute inset-0 w-full h-full"></video>
         <?php else: ?>
           <div aria-hidden="true" class="anim-blob absolute -left-20 -bottom-28 w-[380px] h-[380px] bg-ku"></div>
           <img src="<?= e(url('assets/img/logo.png')) ?>" alt="" class="absolute left-6 top-5 w-20 h-20 object-contain bg-white rounded-2xl p-1">
           <div class="absolute left-6 right-6 top-28 font-display text-[clamp(22px,3vw,34px)] leading-tight"><?= e(setting('video_title')) ?></div>
           <div class="absolute inset-0 flex items-center justify-center"><span class="anim-bob w-24 h-24 rounded-full bg-sun text-ink flex items-center justify-center shadow-[0_0_0_16px_rgba(255,200,69,.25)]"><svg aria-hidden="true" class="w-10 h-10" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg></span></div>
-          <div class="absolute left-0 right-0 bottom-0 px-6 py-3 bg-black/30 text-sm">คลิปจะแสดงที่นี่เมื่อผู้ดูแลใส่ลิงก์ YouTube ในหน้า ตั้งค่า</div>
+          <div class="absolute left-0 right-0 bottom-0 px-6 py-3 bg-black/30 text-sm">คลิปจะแสดงที่นี่เมื่อผู้ดูแลใส่ลิงก์หรืออัปโหลดไฟล์ในหน้า ตั้งค่า</div>
         <?php endif; ?>
       </div>
     </div>

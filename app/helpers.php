@@ -150,6 +150,7 @@ const UPLOAD_TYPES = [
     'jpeg' => ['image/jpeg'],
     'png'  => ['image/png'],
     'webp' => ['image/webp'],
+    'mp4'  => ['video/mp4'],
 ];
 
 /**
@@ -273,6 +274,15 @@ function youtube_embed(string $url): ?string
 {
     if (preg_match('~(?:youtu\.be/|youtube\.com/(?:watch\?v=|embed/|shorts/))([A-Za-z0-9_-]{11})~', $url, $m)) {
         return 'https://www.youtube.com/embed/' . $m[1];
+    }
+    return null;
+}
+
+/** Turn a Google Drive file link into an embeddable preview URL, or return null. */
+function drive_embed(string $url): ?string
+{
+    if (preg_match('~drive\.google\.com/(?:file/d/|open\?id=)([A-Za-z0-9_-]+)~', $url, $m)) {
+        return 'https://drive.google.com/file/d/' . $m[1] . '/preview';
     }
     return null;
 }
