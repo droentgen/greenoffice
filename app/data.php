@@ -39,10 +39,18 @@ function latest_two_months(): array
     return [$r[0] ?? null, $r[1] ?? null];
 }
 
-/** Last N months, oldest first. */
-function recent_months(int $n = 12): array
+/** All 12 calendar months (ม.ค.-ธ.ค.) of one Buddhist-era year; null where no row exists yet. */
+function months_of_year(int $year): array
 {
-    return array_reverse(rows('SELECT * FROM resource_monthly ORDER BY year_be DESC, month DESC LIMIT ' . (int)$n));
+    $byMonth = [];
+    foreach (rows('SELECT * FROM resource_monthly WHERE year_be = ?', [$year]) as $r) {
+        $byMonth[(int)$r['month']] = $r;
+    }
+    $out = [];
+    for ($m = 1; $m <= 12; $m++) {
+        $out[] = $byMonth[$m] ?? null;
+    }
+    return $out;
 }
 
 function month_label(?array $m, bool $short = false): string
