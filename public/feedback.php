@@ -43,7 +43,7 @@ require __DIR__ . '/../app/views/public_top.php';
   <div>
     <span class="eyebrow">ข้อคิดเห็นและข้อร้องเรียนทางด้านสิ่งแวดล้อม</span>
     <h1 class="h-page mt-1.5 mb-2">เจออะไรไม่กรีน บอกเราได้เลย</h1>
-    <p class="text-[17px] text-[#3E5553]">แบบสอบถามใช้เวลาไม่เกิน 2 นาที เลือกไม่ระบุตัวตนได้ ทุกเรื่องจะได้เลขรับเรื่องและติดตามผลได้ที่ “ประกาศข้อร้องเรียน”</p>
+    <p class="text-[17px] text-[#3E5553]">แบบสอบถามใช้เวลาไม่เกิน 2 นาที เลือกไม่ระบุตัวตนได้ ทุกเรื่องจะได้เลขรับเรื่องและติดตามผลได้ที่ “การดำเนินการเรื่องร้องเรียน”</p>
     <?php if ($externalForm): ?>
       <a href="<?= e($externalForm) ?>" target="_blank" rel="noopener" class="btn-outline btn-sm mt-3">หรือกรอกผ่านแบบสอบถามออนไลน์ ↗</a>
     <?php endif; ?>
@@ -55,7 +55,7 @@ require __DIR__ . '/../app/views/public_top.php';
       <div class="font-display text-[40px] leading-tight">เลขรับเรื่อง <?= e($ticket) ?></div>
       <p class="text-[#CFE8E4]">ทีม Green Office จะดำเนินการตามกรอบเวลาใน “แผนการจัดการข้อร้องเรียน”</p>
       <div class="flex gap-2.5 flex-wrap">
-        <a href="<?= e(url('complaints.php')) ?>" class="btn-sun">ดูประกาศข้อร้องเรียน</a>
+        <a href="<?= e(url('complaints.php')) ?>" class="btn-sun">ดูการดำเนินการเรื่องร้องเรียน</a>
         <a href="<?= e(url('feedback.php')) ?>" class="btn border-2 border-white/50 text-white">ส่งเรื่องใหม่</a>
       </div>
     </div>
@@ -111,7 +111,7 @@ require __DIR__ . '/../app/views/public_top.php';
         <label class="label text-base">อีเมล / เบอร์โทร สำหรับแจ้งผล (ไม่บังคับ)<input type="text" name="contact" value="<?= e($old['contact']) ?>" maxlength="150" class="input"></label>
       </div>
       <div class="flex justify-between items-center gap-3 flex-wrap border-t border-[#EDF0EA] pt-5">
-        <span class="text-sm text-muted">ข้อมูลผู้แจ้งจะไม่ถูกเปิดเผยในประกาศข้อร้องเรียน</span>
+        <span class="text-sm text-muted">ข้อมูลผู้แจ้งจะไม่ถูกเปิดเผยในการดำเนินการเรื่องร้องเรียน</span>
         <button type="submit" class="btn-primary text-lg font-display font-normal px-8 min-h-[54px]">ส่งเรื่อง</button>
       </div>
     </form>

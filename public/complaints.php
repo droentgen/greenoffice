@@ -1,8 +1,8 @@
 <?php
-/** ประกาศข้อร้องเรียน — only items the admin marked as public. Never shows the reporter's name or contact. */
+/** การดำเนินการเรื่องร้องเรียน — only items the admin marked as public. Never shows the reporter's name or contact. */
 require __DIR__ . '/../app/bootstrap.php';
 
-$pageTitle = 'ประกาศข้อร้องเรียน';
+$pageTitle = 'การดำเนินการเรื่องร้องเรียน';
 $active = '';
 $items = rows('SELECT id, ticket_no, topic, status, public_title, created_at FROM complaints WHERE is_public = 1 ORDER BY created_at DESC, id DESC');
 
@@ -10,12 +10,12 @@ require __DIR__ . '/../app/views/public_top.php';
 ?>
 <div class="max-w-7xl mx-auto px-4 sm:px-6 pt-12 pb-16 flex flex-col gap-6">
   <div>
-    <span class="eyebrow">ประกาศข้อร้องเรียน</span>
+    <span class="eyebrow">การดำเนินการเรื่องร้องเรียน</span>
     <h1 class="h-page mt-1.5 mb-2">ทุกเรื่องที่แจ้งมา เราตามให้จนจบ</h1>
     <p class="text-[17px] text-[#3E5553]">สรุปข้อร้องเรียนด้านสิ่งแวดล้อมและสถานะการแก้ไข (ไม่เปิดเผยข้อมูลผู้แจ้ง)</p>
   </div>
   <?php if (!$items): ?>
-    <div class="card p-6 text-muted">ยังไม่มีประกาศข้อร้องเรียน</div>
+    <div class="card p-6 text-muted">ยังไม่มีการดำเนินการเรื่องร้องเรียน</div>
   <?php else: ?>
   <div class="grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(300px,1fr))]">
     <?php foreach ($items as $c): $st = COMPLAINT_STATUS[$c['status']]; ?>

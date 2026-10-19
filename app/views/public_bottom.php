@@ -59,7 +59,8 @@ $web = setting('contact_web');
     <div class="flex flex-col gap-1 items-start">
       <h2 class="font-display text-xl text-lime mb-2">ข้อร้องเรียนด้านสิ่งแวดล้อม</h2>
       <a href="<?= e(url('feedback.php')) ?>" class="min-h-[44px] flex items-center text-white underline underline-offset-4">ข้อคิดเห็นและข้อร้องเรียนทางด้านสิ่งแวดล้อม</a>
-      <a href="<?= e(url('complaints.php')) ?>" class="min-h-[44px] flex items-center text-white underline underline-offset-4">ประกาศข้อร้องเรียน</a>
+      <a href="<?= e(url('complaints.php')) ?>" class="min-h-[44px] flex items-center text-white underline underline-offset-4">การดำเนินการเรื่องร้องเรียน</a>
+      <a href="<?= e(url('complaint-notice.php')) ?>" class="min-h-[44px] flex items-center text-white underline underline-offset-4">ประกาศข้อร้องเรียน</a>
       <a href="<?= e(url('complaint-plan.php')) ?>" class="min-h-[44px] flex items-center text-white underline underline-offset-4">แผนการจัดการข้อร้องเรียน</a>
     </div>
     <div class="flex flex-col gap-1 items-start">

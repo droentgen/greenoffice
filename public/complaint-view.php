@@ -11,7 +11,7 @@ $stepNames = ['รับเรื่องและลงทะเบียน',
 require __DIR__ . '/../app/views/public_top.php';
 ?>
 <div class="max-w-4xl mx-auto px-4 sm:px-6 pt-8 pb-16 flex flex-col gap-5">
-  <a href="<?= e(url('complaints.php')) ?>" class="self-start min-h-[44px] inline-flex items-center font-semibold text-ku">← ประกาศข้อร้องเรียน</a>
+  <a href="<?= e(url('complaints.php')) ?>" class="self-start min-h-[44px] inline-flex items-center font-semibold text-ku">← การดำเนินการเรื่องร้องเรียน</a>
   <?php if (!$c): ?>
     <div class="card p-8 text-muted">ไม่พบประกาศนี้</div>
   <?php else: $st = COMPLAINT_STATUS[$c['status']]; ?>

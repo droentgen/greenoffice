@@ -170,11 +170,12 @@ function next_ticket_no(): string
 /* ---------- About page document sections ---------- */
 
 const DOC_SECTIONS = [
-    'policy'         => 'นโยบาย',
-    'goals'          => 'เป้าหมาย',
-    'team'           => 'คณะทำงาน',
-    'measures'       => 'มาตรการและแนวปฏิบัติ',
-    'complaint_plan' => 'แผนการจัดการข้อร้องเรียน',
+    'policy'           => 'นโยบาย',
+    'goals'            => 'เป้าหมาย',
+    'team'             => 'คณะทำงาน',
+    'measures'         => 'มาตรการและแนวปฏิบัติ',
+    'complaint_plan'   => 'แผนการจัดการข้อร้องเรียน',
+    'complaint_notice' => 'ประกาศข้อร้องเรียน',
 ];
 
 /** Where a document opens: uploaded file or external link. */

@@ -1,6 +1,6 @@
 <?php
 /**
- * ข้อร้องเรียน — inbox of feedback from the website form, publishing to ประกาศข้อร้องเรียน,
+ * ข้อร้องเรียน — inbox of feedback from the website form, publishing to การดำเนินการเรื่องร้องเรียน,
  * and the steps of แผนการจัดการข้อร้องเรียน (tab "plan").
  */
 require __DIR__ . '/../../app/bootstrap.php';
@@ -90,8 +90,8 @@ require __DIR__ . '/../../app/views/admin_top.php';
       <label class="label">สถานะ<select name="status" class="input"><?php foreach (COMPLAINT_STATUS as $k => $s): ?><option value="<?= $k ?>" <?= $one['status'] === $k ? 'selected' : '' ?>><?= e($s['label']) ?></option><?php endforeach; ?></select></label>
       <label class="label">ผลการดำเนินงาน<textarea name="result_text" rows="3" class="input"><?= e($one['result_text']) ?></textarea></label>
       <fieldset class="border border-line rounded-2xl p-4 flex flex-col gap-3">
-        <legend class="px-1.5 font-semibold text-sm">ประกาศข้อร้องเรียน (หน้าเว็บ)</legend>
-        <label class="flex items-center gap-2"><input type="checkbox" name="is_public" <?= $one['is_public'] ? 'checked' : '' ?> class="w-5 h-5 accent-ku"> แสดงเรื่องนี้ในประกาศข้อร้องเรียน</label>
+        <legend class="px-1.5 font-semibold text-sm">การดำเนินการเรื่องร้องเรียน (หน้าเว็บ)</legend>
+        <label class="flex items-center gap-2"><input type="checkbox" name="is_public" <?= $one['is_public'] ? 'checked' : '' ?> class="w-5 h-5 accent-ku"> แสดงเรื่องนี้ในการดำเนินการเรื่องร้องเรียน</label>
         <label class="label">หัวข้อที่แสดง<input type="text" name="public_title" value="<?= e($one['public_title']) ?>" maxlength="255" class="input"></label>
         <label class="label">รายละเอียดที่แสดง (ไม่ใส่ชื่อหรือข้อมูลติดต่อผู้แจ้ง)<textarea name="public_detail" rows="3" class="input"><?= e($one['public_detail'] ?? $one['detail']) ?></textarea></label>
       </fieldset>

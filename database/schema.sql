@@ -132,7 +132,7 @@ CREATE TABLE news (
 -- Documents shown on the About page tabs and the complaint plan page (image or PDF)
 CREATE TABLE documents (
   id           SERIAL PRIMARY KEY,
-  section      VARCHAR(20) NOT NULL CHECK (section IN ('policy','goals','team','measures','complaint_plan')),
+  section      VARCHAR(20) NOT NULL CHECK (section IN ('policy','goals','team','measures','complaint_plan','complaint_notice')),
   title        VARCHAR(255) NOT NULL,
   file_path    VARCHAR(255) NULL,                -- uploads/docs/....pdf
   external_url VARCHAR(1000) NULL,               -- or a link (e.g. Google Drive)
