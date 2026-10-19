@@ -57,13 +57,18 @@ require __DIR__ . '/../app/views/public_top.php';
       </div>
     </div>
     <div class="flex-[1_1_260px] flex flex-col gap-3.5">
-      <?php foreach ([
-          ['เฉลี่ยต่อเดือน', num($avg, $m['dec']) . ' ' . $m['unit']],
-          ['เดือนที่ใช้น้อยที่สุด', $minIdx !== null ? month_label($months[$minIdx], true) . ' · ' . num($values[$minIdx], $m['dec']) : '-'],
-          ['รวม ' . count($months) . ' เดือน', num($sum, $m['dec']) . ' ' . $m['unit']],
-      ] as [$k, $v]): ?>
-        <div class="hover-lift rounded-[22px] p-5" style="background:<?= e($m['bg']) ?>"><div class="text-sm text-[#3E5553]"><?= e($k) ?></div><div class="font-display text-[26px]"><?= e($v) ?></div></div>
-      <?php endforeach; ?>
+      <div class="hover-lift rounded-[22px] p-5" style="background:<?= e($m['bg']) ?>">
+        <div class="text-sm text-[#3E5553]">เฉลี่ยต่อเดือน</div>
+        <div class="font-display text-[26px]"><span data-count="<?= round($avg, $m['dec']) ?>" data-dec="<?= $m['dec'] ?>">0</span> <?= e($m['unit']) ?></div>
+      </div>
+      <div class="hover-lift rounded-[22px] p-5" style="background:<?= e($m['bg']) ?>">
+        <div class="text-sm text-[#3E5553]">เดือนที่ใช้น้อยที่สุด</div>
+        <div class="font-display text-[26px]"><?php if ($minIdx !== null): ?><?= e(month_label($months[$minIdx], true)) ?> · <span data-count="<?= round($values[$minIdx], $m['dec']) ?>" data-dec="<?= $m['dec'] ?>">0</span> <?= e($m['unit']) ?><?php else: ?>-<?php endif; ?></div>
+      </div>
+      <div class="hover-lift rounded-[22px] p-5" style="background:<?= e($m['bg']) ?>">
+        <div class="text-sm text-[#3E5553]">รวม <?= count($months) ?> เดือน</div>
+        <div class="font-display text-[26px]"><span data-count="<?= round($sum, $m['dec']) ?>" data-dec="<?= $m['dec'] ?>">0</span> <?= e($m['unit']) ?></div>
+      </div>
       <div class="bg-ink text-white rounded-[22px] p-5"><div class="font-display text-lime">ทิปจากน้องกล้า</div><p class="mt-1.5 text-mint"><?= e($m['tip']) ?></p></div>
     </div>
   </div>
