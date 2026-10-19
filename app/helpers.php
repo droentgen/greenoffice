@@ -229,10 +229,16 @@ function storage_put(string $key, string $bytes, string $mime): void
         'ignore_errors' => true,
         'timeout'       => 30,
     ]]);
-    @file_get_contents($url, false, $ctx);
+    $body = @file_get_contents($url, false, $ctx);
     $status = (int)explode(' ', $http_response_header[0] ?? '0 0')[1];
     if ($status < 200 || $status >= 300) {
-        throw new RuntimeException('อัปโหลดไฟล์ไปที่พื้นที่เก็บข้อมูลไม่สำเร็จ (รหัส ' . $status . ')');
+        // Status 0 means the request never got an HTTP response at all (DNS/TLS/network
+        // failure, or 'storage.url' is empty/misconfigured) — show the connection error
+        // and which host it tried, since "รหัส 0" alone gives no clue which one.
+        $detail = $status === 0
+            ? (error_get_last()['message'] ?? '') . ' (host: ' . (parse_url($url, PHP_URL_HOST) ?: 'ไม่พบ — ตรวจค่า SUPABASE_URL') . ')'
+            : mb_substr((string)$body, 0, 200);
+        throw new RuntimeException('อัปโหลดไฟล์ไปที่พื้นที่เก็บข้อมูลไม่สำเร็จ (รหัส ' . $status . ') ' . $detail);
     }
 }
 
