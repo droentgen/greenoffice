@@ -1,22 +1,20 @@
 # Green Office Digital Platform — คณะเกษตร มหาวิทยาลัยเกษตรศาสตร์
 
 เว็บไซต์สำนักงานสีเขียว (Public Website) + ระบบหลังบ้าน (Admin & Assessment Portal)
-เขียนด้วย **PHP 8 + MySQL/MariaDB** แบบไม่ใช้ framework และ **Tailwind CSS** — แก้ไขง่ายด้วย VS Code หรือ Claude Code
+เขียนด้วย **PHP 8 + PostgreSQL (Supabase)** แบบไม่ใช้ framework และ **Tailwind CSS** — แก้ไขง่ายด้วย VS Code หรือ Claude Code
 
 ## สิ่งที่ต้องมี
-- PHP 8.1 ขึ้นไป (มี `pdo_mysql`, `mbstring`, `fileinfo`)
-- MySQL 8 หรือ MariaDB 10.4 ขึ้นไป
-- ง่ายสุด: ติดตั้ง [XAMPP](https://www.apachefriends.org/) (มีครบทั้ง Apache, PHP, MySQL, phpMyAdmin)
+- PHP 8.1 ขึ้นไป (มี `pdo_pgsql`, `mbstring`, `fileinfo`)
+- โปรเจกต์ Supabase (ฟรี) หรือ PostgreSQL 14 ขึ้นไปสำหรับรันเอง
 
-## ติดตั้งบนเครื่อง (XAMPP)
-1. วางโฟลเดอร์ `green-office` ไว้ใน `C:\xampp\htdocs\` (Mac: `/Applications/XAMPP/htdocs/`)
-2. คัดลอก `config/config.sample.php` เป็น `config/config.php` แล้วแก้ชื่อผู้ใช้/รหัสผ่านฐานข้อมูล (XAMPP ปกติคือ `root` ไม่มีรหัสผ่าน)
-3. สร้างฐานข้อมูล เลือกวิธีใดวิธีหนึ่ง
-   - **ผ่าน phpMyAdmin**: สร้างฐานข้อมูลชื่อ `green_office` (Collation `utf8mb4_unicode_ci`) → Import `database/schema.sql` → Import `database/seed.sql`
-   - **ผ่าน Terminal**: `php database/install.php` (สร้างฐานข้อมูลและใส่ข้อมูลให้อัตโนมัติ, เพิ่ม `--no-sample` ถ้าไม่ต้องการข้อมูลตัวอย่าง)
-4. เปิด http://localhost/green-office/public/
-
-ไม่มี XAMPP แต่มี PHP: `php -S localhost:8000 -t public` แล้วเปิด http://localhost:8000
+## ตั้งค่า Supabase
+1. สร้างโปรเจกต์ใหม่ที่ https://supabase.com/
+2. ไปที่ Project Settings › Database แล้วคัดลอก connection info (host, port, database, user, password — ใช้ค่าจาก connection pooler ถ้ามี)
+3. คัดลอก `config/config.sample.php` เป็น `config/config.php` แล้วใส่ค่าที่คัดลอกมา
+4. สร้างตาราง + ข้อมูลเริ่มต้น เลือกวิธีใดวิธีหนึ่ง
+   - **ผ่าน Supabase SQL Editor**: วางเนื้อหา `database/schema.sql` แล้วรัน → วางเนื้อหา `database/seed.sql` แล้วรัน
+   - **ผ่าน Terminal**: `php database/install.php` (สร้างตารางและใส่ข้อมูลให้อัตโนมัติ, เพิ่ม `--no-sample` ถ้าไม่ต้องการข้อมูลตัวอย่าง)
+5. รัน `php -S localhost:8000 -t public` แล้วเปิด http://localhost:8000
 
 ## เข้าระบบหลังบ้าน
 - URL: `/admin/`
@@ -77,6 +75,7 @@ green-office/
 4. ให้สิทธิ์เขียนโฟลเดอร์ `public/uploads/`
 5. ลบข้อมูลตัวอย่าง: ติดตั้งใหม่ด้วย `php database/install.php --no-sample`
 6. Tailwind ตอนนี้โหลดจาก CDN (สะดวกตอนพัฒนา) — ถ้าต้องการเร็วขึ้นบนเซิร์ฟเวอร์จริง ให้ build CSS ด้วย Tailwind CLI แล้วเปลี่ยน `<script src="https://cdn.tailwindcss.com">` เป็น `<link>` ไฟล์ CSS
+7. ฐานข้อมูล Supabase เข้าถึงได้จากอินเทอร์เน็ตอยู่แล้ว ตรวจสอบว่า Network Restrictions ของโปรเจกต์ (Supabase › Database) อนุญาต IP ของเซิร์ฟเวอร์ที่ใช้รันเว็บ
 
 ## ความปลอดภัยที่มีให้แล้ว
 รหัสผ่านเข้ารหัส bcrypt · CSRF token ทุกฟอร์ม · Prepared statements ทุก query · Escape HTML ทุกจุด · ตรวจชนิดไฟล์อัปโหลดจากเนื้อไฟล์จริง และกันรันสคริปต์ในโฟลเดอร์ uploads · จำกัดการเดารหัสผ่าน (5 ครั้ง/60 วินาที) · ข้อมูลผู้แจ้งข้อร้องเรียนไม่แสดงบนหน้าเว็บ

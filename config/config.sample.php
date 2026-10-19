@@ -2,15 +2,17 @@
 /**
  * Copy this file to config/config.php and fill in your own values.
  * config/config.php is ignored by git so passwords never get committed.
+ *
+ * Database is PostgreSQL. For Supabase: Project Settings › Database › Connection string
+ * (use the pooler host/port shown there for most hosting setups).
  */
 return [
     'db' => [
-        'host'    => '127.0.0.1',
-        'port'    => 3306,
-        'name'    => 'green_office',
-        'user'    => 'root',
-        'pass'    => '',
-        'charset' => 'utf8mb4',
+        'host' => '127.0.0.1',
+        'port' => 5432,
+        'name' => 'postgres',
+        'user' => 'postgres',
+        'pass' => '',
     ],
 
     // URL path of the public/ folder.

@@ -1,15 +1,15 @@
 # CLAUDE.md — guide for working on this project
 
 Green Office Digital Platform for the Faculty of Agriculture, Kasetsart University.
-Plain PHP 8 (no framework) + MySQL/MariaDB + Tailwind CSS (Play CDN). UI text is Thai.
+Plain PHP 8 (no framework) + PostgreSQL (Supabase) + Tailwind CSS (Play CDN). UI text is Thai.
 
 ## Run locally
 ```bash
-cp config/config.sample.php config/config.php   # set DB user/pass
-php database/install.php                        # create DB + tables + starting data (add --no-sample for clean)
+cp config/config.sample.php config/config.php   # set DB host/user/pass (Supabase connection info, or local Postgres)
+php database/install.php                        # create tables + starting data (add --no-sample for clean; target DB must already exist)
 php -S localhost:8000 -t public                 # http://localhost:8000  (admin: /admin/  admin / green2569)
 ```
-After changing seed data in `database/install.php`, regenerate the SQL for phpMyAdmin users:
+After changing seed data in `database/install.php`, regenerate the SQL for the Supabase SQL editor:
 `php database/install.php --dump-seed > database/seed.sql`
 
 ## Layout

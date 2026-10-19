@@ -104,7 +104,7 @@ function setting(string $key, string $default = ''): string
 
 function save_setting(string $key, string $value): void
 {
-    q('INSERT INTO settings (k, v) VALUES (?, ?) ON DUPLICATE KEY UPDATE v = VALUES(v)', [$key, $value]);
+    q('INSERT INTO settings (k, v) VALUES (?, ?) ON CONFLICT (k) DO UPDATE SET v = EXCLUDED.v', [$key, $value]);
 }
 
 /* ---------- Formatting ---------- */
