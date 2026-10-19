@@ -5,7 +5,10 @@ RUN apt-get update \
     && docker-php-ext-install pdo_pgsql pgsql \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-RUN a2enmod rewrite
+# Installing packages above can trigger Debian's apache2 postinst to re-enable
+# mpm_event alongside the mpm_prefork this image already uses for mod_php,
+# which makes Apache refuse to start ("More than one MPM loaded"). Force prefork.
+RUN a2dismod mpm_event mpm_worker 2>/dev/null; a2enmod mpm_prefork rewrite
 
 # Web root is public/ — app/, config/, database/ are never reachable because they
 # sit outside it entirely (same as the "real server" setup described in README.md).
