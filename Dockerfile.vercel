@@ -1,0 +1,19 @@
+FROM dunglas/frankenphp:1-php8.3-alpine
+
+RUN apk add --no-cache postgresql-dev \
+    && docker-php-ext-install pdo_pgsql pgsql
+
+WORKDIR /app
+
+# app/, config/, database/ are never reachable — the Caddyfile's web root is
+# public/ only, so those folders simply sit outside what Caddy can serve.
+COPY Caddyfile /etc/caddy/Caddyfile
+COPY . .
+RUN rm -f config/config.php
+
+COPY docker-entrypoint-vercel.sh /usr/local/bin/docker-entrypoint-vercel.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint-vercel.sh
+
+ENV PORT=80
+ENTRYPOINT ["docker-entrypoint-vercel.sh"]
+CMD ["frankenphp", "run", "--config", "/etc/caddy/Caddyfile"]

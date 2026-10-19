@@ -23,6 +23,9 @@ if (!empty($CONFIG['debug'])) {
     ini_set('display_errors', '0');
 }
 
+require __DIR__ . '/db.php';
+require __DIR__ . '/session_db.php';
+
 if (session_status() !== PHP_SESSION_ACTIVE) {
     session_name('GOSESSID');
     session_set_cookie_params([
@@ -30,10 +33,10 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
         'samesite' => 'Lax',
         'secure'   => !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off',
     ]);
+    session_set_save_handler(new DbSessionHandler(), true);
     session_start();
 }
 
-require __DIR__ . '/db.php';
 require __DIR__ . '/helpers.php';
 require __DIR__ . '/auth.php';
 require __DIR__ . '/data.php';

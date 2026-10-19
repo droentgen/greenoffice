@@ -3,7 +3,7 @@
 
 DROP TABLE IF EXISTS criteria_evidence, criteria_reports, criteria_subitems, criteria_indicators, criteria_issues, categories,
   resource_monthly, news, missions, activities, audit_findings, documents, complaints, complaint_plan_steps,
-  game_responses, settings, users CASCADE;
+  game_responses, settings, users, app_sessions CASCADE;
 
 -- Shared trigger: keep updated_at current on every UPDATE (replaces MySQL's "ON UPDATE CURRENT_TIMESTAMP").
 CREATE OR REPLACE FUNCTION set_updated_at() RETURNS TRIGGER AS $$
@@ -30,6 +30,15 @@ CREATE TABLE settings (
   k VARCHAR(60) PRIMARY KEY,
   v TEXT NOT NULL
 );
+
+-- PHP session storage (see app/session_db.php) — needed on hosts where each
+-- request can land on a different machine with no shared local disk.
+CREATE TABLE app_sessions (
+  id          VARCHAR(128) PRIMARY KEY,
+  data        TEXT NOT NULL DEFAULT '',
+  last_access TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+CREATE INDEX idx_app_sessions_last_access ON app_sessions (last_access);
 
 -- ---------- Resource statistics (one row per month) ----------
 -- GHG is not stored: it is calculated from fuel and electricity with the factors in settings.

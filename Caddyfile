@@ -1,0 +1,15 @@
+:{$PORT:80} {
+	root * /app/public
+	encode zstd gzip
+
+	# Never execute uploaded files as PHP (same rule as public/uploads/.htaccess).
+	@blocked_uploads {
+		path /uploads/*.php /uploads/*.phtml /uploads/*.phar
+	}
+	respond @blocked_uploads 403
+
+	# php_server's own file-then-index.php fallback already prefers index.php
+	# over any index.html in the same folder, so public/index.html (a static
+	# preview file left over from local testing) is never served by mistake.
+	php_server
+}

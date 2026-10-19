@@ -1,0 +1,7 @@
+.git
+.vscode
+config/config.php
+public/uploads/*
+!public/uploads/.htaccess
+!public/uploads/docs/.gitkeep
+!public/uploads/news/.gitkeep
