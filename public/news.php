@@ -19,9 +19,15 @@ $params = [];
 if ($cat) { $where[] = 'category = ?'; $params[] = $cat; }
 if ($from) { $where[] = 'published_at >= ?'; $params[] = $from; }
 if ($to) { $where[] = 'published_at <= ?'; $params[] = $to; }
-$news = rows('SELECT * FROM news WHERE ' . implode(' AND ', $where) . ' ORDER BY published_at DESC, id DESC', $params);
+$perPage = 8;
+$total = (int)val('SELECT COUNT(*) FROM news WHERE ' . implode(' AND ', $where), $params);
+$pages = max(1, (int)ceil($total / $perPage));
+$page = min($pages, max(1, (int)($_GET['page'] ?? 1)));
+$news = rows('SELECT * FROM news WHERE ' . implode(' AND ', $where) . ' ORDER BY published_at DESC, id DESC LIMIT ' . $perPage . ' OFFSET ' . (($page - 1) * $perPage), $params);
 
-$posters = rows('SELECT id, title, image_path, posted_at FROM posters WHERE is_published = 1 ORDER BY posted_at DESC NULLS LAST, id DESC');
+// One row of the newest posters; the rest are on posters.php.
+$posters = rows('SELECT id, title, image_path, posted_at FROM posters WHERE is_published = 1 ORDER BY posted_at DESC NULLS LAST, id DESC LIMIT 6');
+$posterTotal = (int)val('SELECT COUNT(*) FROM posters WHERE is_published = 1');
 
 /** Link to this page keeping the current filters, with some of them changed. */
 $link = function (array $change) use ($cat, $from, $to): string {
@@ -74,13 +80,16 @@ require __DIR__ . '/../app/views/public_top.php';
     </div>
   </form>
 
-  <?php if ($from || $to): ?>
-    <p class="text-muted -mt-2" role="status">
-      พบ <strong class="text-ink"><?= count($news) ?></strong> ข่าว
-      · <?= $from ? e(thai_date($from)) : 'ตั้งแต่แรก' ?> – <?= $to ? e(thai_date($to)) : 'ปัจจุบัน' ?>
-    </p>
-  <?php endif; ?>
-  <?php include __DIR__ . '/../app/views/partials/news_cards.php'; ?>
+  <div id="news-list" class="scroll-mt-28 flex flex-col gap-6">
+    <?php if ($from || $to): ?>
+      <p class="text-muted -mt-2" role="status">
+        พบ <strong class="text-ink"><?= $total ?></strong> ข่าว
+        · <?= $from ? e(thai_date($from)) : 'ตั้งแต่แรก' ?> – <?= $to ? e(thai_date($to)) : 'ปัจจุบัน' ?>
+      </p>
+    <?php endif; ?>
+    <?php include __DIR__ . '/../app/views/partials/news_cards.php'; ?>
+    <?php $pageUrl = fn(int $n) => $link(['page' => $n > 1 ? $n : '']) . '#news-list'; include __DIR__ . '/../app/views/partials/pagination.php'; ?>
+  </div>
 
   <section id="posters" aria-labelledby="posters-h" class="mt-10 flex flex-col gap-5">
     <div class="flex justify-between items-end gap-4 flex-wrap">
@@ -90,52 +99,31 @@ require __DIR__ . '/../app/views/public_top.php';
         <p class="text-muted mt-1">กดที่โปสเตอร์เพื่อดูขนาดใหญ่</p>
       </div>
       <?php if ($posters): ?>
-        <label class="relative flex-[0_1_360px] w-full">
-          <span class="sr-only">ค้นหาโปสเตอร์ตามชื่อ</span>
+        <form method="get" action="<?= e(url('posters.php')) ?>" role="search" class="relative flex-[0_1_360px] w-full">
+          <label for="poster-q" class="sr-only">ค้นหาโปสเตอร์ตามชื่อ</label>
           <svg class="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-ku pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-          <input type="search" placeholder="ค้นหาชื่อโปสเตอร์…" class="input rounded-full pl-12 bg-white" data-poster-search>
-        </label>
+          <input id="poster-q" type="search" name="q" placeholder="ค้นหาชื่อโปสเตอร์ทั้งหมด…" class="input rounded-full pl-12 pr-24 bg-white">
+          <button class="absolute right-1.5 top-1/2 -translate-y-1/2 min-h-[38px] px-4 rounded-full bg-ku text-white text-sm font-semibold">ค้นหา</button>
+        </form>
       <?php endif; ?>
     </div>
 
-    <div class="poster-board rounded-[32px] px-4 py-8 sm:p-9">
+    <div class="poster-board rounded-[32px] px-4 py-8 sm:p-9 flex flex-col gap-7">
       <?php if (!$posters): ?>
         <p class="text-center text-muted py-6">ยังไม่มีโปสเตอร์ประชาสัมพันธ์</p>
       <?php else: ?>
-        <ul class="grid gap-x-5 gap-y-9 [grid-template-columns:repeat(auto-fill,minmax(150px,1fr))]">
-          <?php foreach ($posters as $p): $src = upload_url($p['image_path']); ?>
-            <li data-poster-item data-name="<?= e(mb_strtolower($p['title'])) ?>">
-              <button type="button" class="poster" data-poster data-src="<?= e($src) ?>" data-title="<?= e($p['title']) ?>" data-date="<?= e(thai_date($p['posted_at'])) ?>" aria-label="ดูโปสเตอร์ขนาดใหญ่: <?= e($p['title']) ?>">
-                <span class="poster-pin" aria-hidden="true"></span>
-                <span class="poster-paper">
-                  <span class="relative block overflow-hidden rounded-md">
-                    <img src="<?= e($src) ?>" alt="" loading="lazy" class="w-full aspect-[3/4] object-cover bg-cream">
-                    <span class="poster-zoom" aria-hidden="true"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5M11 8v6M8 11h6"/></svg></span>
-                  </span>
-                  <span class="block mt-2 text-sm font-semibold leading-snug text-ink line-clamp-2"><?= e($p['title']) ?></span>
-                  <?php if ($p['posted_at']): ?><span class="block text-xs text-muted mt-0.5"><?= e(thai_date($p['posted_at'])) ?></span><?php endif; ?>
-                </span>
-              </button>
-            </li>
-          <?php endforeach; ?>
+        <ul class="grid gap-x-5 gap-y-9 grid-cols-2 sm:grid-cols-3 lg:grid-cols-6">
+          <?php foreach ($posters as $p) { include __DIR__ . '/../app/views/partials/poster_card.php'; } ?>
         </ul>
-        <p class="text-center text-muted py-6" hidden data-poster-empty>ไม่พบโปสเตอร์ที่ชื่อตรงกับคำค้น</p>
+        <div class="flex justify-center">
+          <a href="<?= e(url('posters.php')) ?>" class="btn-primary group">
+            ดูโปสเตอร์ทั้งหมด<?= $posterTotal > count($posters) ? ' (' . $posterTotal . ')' : '' ?>
+            <span class="transition group-hover:translate-x-1" aria-hidden="true">→</span>
+          </a>
+        </div>
       <?php endif; ?>
     </div>
   </section>
 </div>
-
-<dialog id="poster-lightbox" class="poster-lb" aria-label="โปสเตอร์ขนาดใหญ่">
-  <figure class="flex flex-col items-center gap-3 m-0" data-lb-figure>
-    <img src="" alt="" class="anim-pop max-h-[78vh] max-w-full w-auto rounded-2xl bg-white shadow-2xl object-contain" data-lb-img>
-    <figcaption class="text-center text-white">
-      <span class="block font-display text-lg" data-lb-title></span>
-      <span class="text-sm text-white/70" data-lb-meta></span>
-      <a href="#" target="_blank" rel="noopener" class="ml-2 text-sm text-lime underline" data-lb-open>เปิดไฟล์เต็ม</a>
-    </figcaption>
-  </figure>
-  <button type="button" class="lb-btn top-3 right-3" data-lb-close aria-label="ปิด">✕</button>
-  <button type="button" class="lb-btn left-2 sm:left-5 top-1/2 -translate-y-1/2 text-2xl" data-lb-prev aria-label="โปสเตอร์ก่อนหน้า">‹</button>
-  <button type="button" class="lb-btn right-2 sm:right-5 top-1/2 -translate-y-1/2 text-2xl" data-lb-next aria-label="โปสเตอร์ถัดไป">›</button>
-</dialog>
+<?php include __DIR__ . '/../app/views/partials/poster_lightbox.php'; ?>
 <?php require __DIR__ . '/../app/views/public_bottom.php'; ?>
