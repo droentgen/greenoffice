@@ -164,11 +164,7 @@
       });
     });
 
-    var seen = false;
-    try { seen = localStorage.getItem('go_checkin') === '1'; } catch (e) {}
-    if (!seen || location.hash === '#play') {
-      render(); game.hidden = false; document.body.style.overflow = 'hidden';
-    }
+    render(); game.hidden = false; document.body.style.overflow = 'hidden';
   }
 
   /* ---------- Admin: live GHG preview on the statistics form ---------- */
