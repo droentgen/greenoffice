@@ -180,6 +180,70 @@
     f.addEventListener('input', upd); el.addEventListener('input', upd); upd();
   }
 
+  /* ---------- News date filter: open the calendar when the whole field is clicked ---------- */
+  document.querySelectorAll('[data-date-picker]').forEach(function (inp) {
+    inp.addEventListener('click', function () { try { inp.showPicker(); } catch (e) {} });
+  });
+
+  /* ---------- Posters: live search by name ---------- */
+  var posterSearch = document.querySelector('[data-poster-search]');
+  if (posterSearch) {
+    var posterItems = document.querySelectorAll('[data-poster-item]');
+    var posterEmpty = document.querySelector('[data-poster-empty]');
+    posterSearch.addEventListener('input', function () {
+      var words = posterSearch.value.toLowerCase().trim().split(/\s+/).filter(Boolean), shown = 0;
+      posterItems.forEach(function (li) {
+        var name = li.getAttribute('data-name');
+        var ok = words.every(function (w) { return name.indexOf(w) !== -1; });
+        li.hidden = !ok; if (ok) shown++;
+      });
+      posterEmpty.hidden = shown > 0;
+    });
+  }
+
+  /* ---------- Posters: lightbox with previous / next (arrow keys too) over the posters still shown ---------- */
+  var lb = document.getElementById('poster-lightbox');
+  if (lb && lb.showModal) {
+    var lbImg = lb.querySelector('[data-lb-img]'), lbCur = null;
+    function lbList() { return [].filter.call(document.querySelectorAll('[data-poster]'), function (b) { return !b.parentNode.hidden; }); }
+    function lbShow(btn) {
+      lbCur = btn;
+      lbImg.classList.remove('anim-pop'); void lbImg.offsetWidth; lbImg.classList.add('anim-pop');
+      lbImg.src = btn.getAttribute('data-src'); lbImg.alt = btn.getAttribute('data-title');
+      lb.querySelector('[data-lb-title]').textContent = btn.getAttribute('data-title');
+      var list = lbList();
+      lb.querySelector('[data-lb-meta]').textContent = [btn.getAttribute('data-date'), (list.indexOf(btn) + 1) + ' / ' + list.length].filter(Boolean).join(' · ');
+      lb.querySelector('[data-lb-open]').href = btn.getAttribute('data-src');
+      lb.querySelector('[data-lb-prev]').hidden = lb.querySelector('[data-lb-next]').hidden = list.length < 2;
+    }
+    function lbStep(d) { var list = lbList(), i = list.indexOf(lbCur); if (list.length) lbShow(list[(i + d + list.length) % list.length]); }
+    document.querySelectorAll('[data-poster]').forEach(function (b) {
+      b.addEventListener('click', function () { lbShow(b); lb.showModal(); });
+    });
+    lb.querySelector('[data-lb-close]').addEventListener('click', function () { lb.close(); });
+    lb.querySelector('[data-lb-prev]').addEventListener('click', function () { lbStep(-1); });
+    lb.querySelector('[data-lb-next]').addEventListener('click', function () { lbStep(1); });
+    lb.addEventListener('click', function (ev) { if (ev.target === lb || ev.target.hasAttribute('data-lb-figure')) lb.close(); });
+    // On document, not the dialog: focus can sit on <body> while the dialog is open.
+    document.addEventListener('keydown', function (ev) {
+      if (!lb.open) return;
+      if (ev.key === 'ArrowLeft') lbStep(-1);
+      if (ev.key === 'ArrowRight') lbStep(1);
+    });
+    lb.addEventListener('close', function () { if (lbCur) lbCur.focus(); });
+  }
+
+  /* ---------- Admin: preview a chosen image before uploading — <input type="file" data-preview="#imgId"> ---------- */
+  document.querySelectorAll('input[type="file"][data-preview]').forEach(function (inp) {
+    var img = document.querySelector(inp.getAttribute('data-preview'));
+    if (!img) return;
+    var orig = img.getAttribute('src'), origHidden = img.hidden;
+    inp.addEventListener('change', function () {
+      if (inp.files.length) { img.src = URL.createObjectURL(inp.files[0]); img.hidden = false; }
+      else { img.setAttribute('src', orig); img.hidden = origHidden; }
+    });
+  });
+
   /* ---------- Admin: news body editor — insert links and uploaded images as [text](url) / ![](url) ---------- */
   document.querySelectorAll('[data-body-editor]').forEach(function (box) {
     var ta = box.querySelector('textarea'), file = box.querySelector('[data-image-file]');

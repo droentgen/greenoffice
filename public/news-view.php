@@ -19,6 +19,13 @@ require __DIR__ . '/../app/views/public_top.php';
     <div class="text-sm text-muted"><?= e(thai_date($n['published_at'])) ?></div>
     <?php if ($n['image_path']): ?><img src="<?= e(upload_url($n['image_path'])) ?>" alt="" class="w-full rounded-3xl"><?php endif; ?>
     <div class="text-[17px] leading-loose whitespace-pre-line"><?= render_body($n['body']) ?></div>
+    <?php $embed = !empty($n['video_url']) ? (youtube_embed($n['video_url']) ?? drive_embed($n['video_url'])) : null; ?>
+    <?php if ($embed): ?>
+      <div class="flex flex-col gap-2">
+        <h2 class="font-display font-semibold text-lg">คลิปฝึกอบรม</h2>
+        <iframe src="<?= e($embed) ?>" title="คลิปฝึกอบรม" class="w-full aspect-video rounded-3xl bg-ink" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe>
+      </div>
+    <?php endif; ?>
     <?php $links = array_filter(NEWS_LINKS, fn($k) => !empty($n[$k]), ARRAY_FILTER_USE_KEY); ?>
     <?php if ($links): ?>
       <div class="card p-6 flex flex-col gap-3">

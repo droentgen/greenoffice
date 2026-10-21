@@ -2,7 +2,7 @@
 -- Import this first, then seed.sql.
 
 DROP TABLE IF EXISTS criteria_evidence, criteria_reports, criteria_subitems, criteria_indicators, criteria_issues, categories,
-  resource_monthly, news, missions, activities, audit_findings, documents, complaints, complaint_plan_steps,
+  resource_monthly, news, posters, missions, activities, audit_findings, documents, complaints, complaint_plan_steps,
   game_responses, settings, users, app_sessions CASCADE;
 
 -- Shared trigger: keep updated_at current on every UPDATE (replaces MySQL's "ON UPDATE CURRENT_TIMESTAMP").
@@ -128,8 +128,20 @@ CREATE TABLE news (
   pretest_url  VARCHAR(1000) NULL,                -- ลิงก์สอบก่อนอบรม
   posttest_url VARCHAR(1000) NULL,                -- ลิงก์สอบหลังอบรม
   eval_url     VARCHAR(1000) NULL,                -- ลิงก์ประเมินการฝึกอบรม
+  doc_url      VARCHAR(1000) NULL,                -- ลิงก์เอกสารฝึกอบรม
+  video_url    VARCHAR(1000) NULL,                -- ลิงก์คลิปฝึกอบรม (YouTube / Google Drive เล่นในหน้าข่าวได้)
   status       VARCHAR(10) NOT NULL DEFAULT 'draft' CHECK (status IN ('draft','review','published')),
   published_at DATE NULL,
+  created_at   TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Publicity posters (โปสเตอร์ประชาสัมพันธ์) shown under the news list
+CREATE TABLE posters (
+  id           SERIAL PRIMARY KEY,
+  title        VARCHAR(255) NOT NULL,
+  image_path   VARCHAR(255) NOT NULL,
+  posted_at    DATE NULL,
+  is_published SMALLINT NOT NULL DEFAULT 1,
   created_at   TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 

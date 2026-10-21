@@ -43,6 +43,42 @@ body { background: #F8F6EC; }
 .ans { transition: all .2s; }
 .ans:hover { border-color: #C5E063; background: rgba(255,255,255,.14); transform: translateX(6px); }
 
+/* News date filter: our own calendar icon replaces the browser's (the whole field opens the picker, see app.js) */
+input[data-date-picker]::-webkit-calendar-picker-indicator { opacity: 0; cursor: pointer; }
+
+/* Poster board (news page): pinned posters, slightly tilted, straighten and lift on hover */
+.poster-board {
+  background-color: #EFE6D2;
+  background-image: radial-gradient(rgba(122,80,0,.10) 1.5px, transparent 1.5px);
+  background-size: 18px 18px;
+  box-shadow: inset 0 0 0 10px #E3D5B6, inset 0 4px 30px rgba(60,40,0,.10);
+}
+.poster { position: relative; display: block; width: 100%; text-align: left; transform: rotate(var(--tilt, 0)); transform-origin: 50% 0;
+  transition: transform .35s cubic-bezier(.2,.9,.3,1.3); }
+li:nth-child(4n+1) > .poster { --tilt: -2.2deg; --pin: #E4572E; }
+li:nth-child(4n+2) > .poster { --tilt: 1.6deg;  --pin: #FFC845; }
+li:nth-child(4n+3) > .poster { --tilt: -1deg;   --pin: #9CCB3B; }
+li:nth-child(4n+4) > .poster { --tilt: 2.4deg;  --pin: #0B7A77; }
+.poster:hover, .poster:focus-visible { transform: rotate(0) translateY(-6px) scale(1.05); z-index: 2; outline: none; }
+.poster-paper { display: block; background: #fff; padding: 8px 8px 12px; border-radius: 10px;
+  box-shadow: 0 10px 18px -10px rgba(60,40,0,.45); transition: box-shadow .3s; }
+.poster:hover .poster-paper { box-shadow: 0 26px 36px -18px rgba(60,40,0,.6); }
+.poster:focus-visible .poster-paper { box-shadow: 0 0 0 3px #006664, 0 26px 36px -18px rgba(60,40,0,.6); }
+.poster-pin { position: absolute; top: -9px; left: 50%; width: 18px; height: 18px; margin-left: -9px; border-radius: 50%; z-index: 1;
+  background: radial-gradient(circle at 35% 30%, #fff 0 14%, var(--pin, #E4572E) 42%); box-shadow: 0 3px 4px rgba(0,0,0,.35); }
+.poster-zoom { position: absolute; right: 8px; bottom: 8px; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  background: rgba(0,61,60,.85); color: #fff; opacity: 0; transform: scale(.6); transition: all .25s cubic-bezier(.2,.9,.3,1.4); }
+.poster:hover .poster-zoom, .poster:focus-visible .poster-zoom { opacity: 1; transform: scale(1); }
+
+/* Poster lightbox */
+.poster-lb { width: 100vw; height: 100vh; max-width: 100vw; max-height: 100vh; margin: 0; padding: 56px 16px 24px; border: 0; background: transparent; }
+.poster-lb[open] { display: flex; align-items: center; justify-content: center; }
+.poster-lb::backdrop { background: rgba(0,30,29,.86); backdrop-filter: blur(5px); }
+.lb-btn { position: absolute; width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,.14); color: #fff; font-size: 20px; line-height: 1; transition: background .2s; }
+.lb-btn:hover, .lb-btn:focus-visible { background: rgba(255,255,255,.3); outline: none; }
+.lb-btn[hidden] { display: none; }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; }
   .grow-bar, .grow-h { transition: none; }

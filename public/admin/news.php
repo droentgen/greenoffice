@@ -38,9 +38,11 @@ if (is_post()) {
                 delete_upload(val('SELECT image_path FROM news WHERE id = ?', [$id]) ?: null);
                 q('UPDATE news SET image_path = ? WHERE id = ?', [$img, $id]);
             }
-            q('UPDATE news SET category = ?, title = ?, summary = ?, body = ?, status = ?, published_at = ?, register_url = ?, pretest_url = ?, posttest_url = ?, eval_url = ? WHERE id = ?', [...$data, $id]);
+            q('UPDATE news SET category = ?, title = ?, summary = ?, body = ?, status = ?, published_at = ?, ' . implode(' = ?, ', array_keys(NEWS_LINKS)) . ' = ? WHERE id = ?', [...$data, $id]);
         } else {
-            q('INSERT INTO news (category, title, summary, body, status, published_at, register_url, pretest_url, posttest_url, eval_url, image_path) VALUES (?,?,?,?,?,?,?,?,?,?,?)', [...$data, $img]);
+            // Link column names come from the NEWS_LINKS constant, never from user input.
+            $cols = ['category', 'title', 'summary', 'body', 'status', 'published_at', ...array_keys(NEWS_LINKS), 'image_path'];
+            q('INSERT INTO news (' . implode(', ', $cols) . ') VALUES (' . implode(',', array_fill(0, count($cols), '?')) . ')', [...$data, $img]);
         }
         flash('บันทึกข่าวแล้ว');
         redirect('admin/news.php');
@@ -80,7 +82,7 @@ require __DIR__ . '/../../app/views/admin_top.php';
     <span class="text-xs text-muted font-normal">ลิงก์: [ข้อความ](https://…) · รูป: ![คำอธิบาย](https://…) · วางลิงก์ https://… ไว้ตรง ๆ ก็กดได้เช่นกัน</span>
   </div>
   <fieldset class="border-2 border-[#EDF0EA] rounded-2xl p-4 flex flex-col gap-3">
-    <legend class="px-1.5 font-semibold">ลิงก์สำหรับอบรม/สัมมนา <span class="text-sm text-muted font-normal">(ไม่บังคับ — ใส่เฉพาะที่มี)</span></legend>
+    <legend class="px-1.5 font-semibold">ลิงก์สำหรับอบรม/สัมมนา <span class="text-sm text-muted font-normal">(ไม่บังคับ — ใส่เฉพาะที่มี · คลิป YouTube / Google Drive จะเล่นในหน้าข่าวได้เลย)</span></legend>
     <div class="grid gap-3 [grid-template-columns:repeat(auto-fit,minmax(260px,1fr))]">
       <?php foreach (NEWS_LINKS as $k => $label): ?>
         <label class="label">ลิงก์<?= e($label) ?><input type="url" name="<?= $k ?>" value="<?= e($editing[$k] ?? '') ?>" maxlength="1000" placeholder="https://" class="input"></label>

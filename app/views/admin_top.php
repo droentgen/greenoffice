@@ -6,7 +6,8 @@ require_once __DIR__ . '/partials/mascot.php';
 $menu = [
     'dash'       => ['Dashboard ผู้ดูแล', 'index.php', []],
     'news'       => ['จัดการเนื้อหา (ข่าว)', 'news.php', ['editor']],
-    'documents'  => ['เอกสารเกี่ยวกับเรา', 'documents.php', ['editor']],
+    'posters'    => ['โปสเตอร์ประชาสัมพันธ์', 'posters.php', ['editor']],
+    'documents'  =>['เอกสารเกี่ยวกับเรา', 'documents.php', ['editor']],
     'activities' => ['จัดการแผนและกิจกรรม', 'activities.php', ['editor', 'staff']],
     'stats'      => ['จัดการสถิติ', 'stats.php', ['staff']],
     'criteria'   => ['จัดการข้อกำหนด 7 หมวด', 'criteria.php', ['editor']],
