@@ -1,5 +1,5 @@
 <?php
-/** โปสเตอร์ประชาสัมพันธ์ทั้งหมด — every published poster, grouped by month, live search by name (?q= prefills it). */
+/** โปสเตอร์ประชาสัมพันธ์ทั้งหมด — every published poster, grouped by year (พ.ศ.), live search by name (?q= prefills it). */
 require __DIR__ . '/../app/bootstrap.php';
 
 $pageTitle = 'โปสเตอร์ประชาสัมพันธ์ทั้งหมด';
@@ -9,10 +9,8 @@ $q = trim((string)($_GET['q'] ?? ''));
 $posters = rows('SELECT id, title, image_path, posted_at FROM posters WHERE is_published = 1 ORDER BY posted_at DESC NULLS LAST, id DESC');
 $groups = [];
 foreach ($posters as $p) {
-    $label = $p['posted_at']
-        ? THAI_MONTHS[(int)date('n', strtotime($p['posted_at']))] . ' ' . ((int)date('Y', strtotime($p['posted_at'])) + 543)
-        : 'ไม่ระบุวันที่';
-    $groups[$label][] = $p;
+    $year = $p['posted_at'] ? (string)((int)date('Y', strtotime($p['posted_at'])) + 543) : 'ไม่ระบุปี';
+    $groups[$year][] = $p;
 }
 
 require __DIR__ . '/../app/views/public_top.php';
@@ -30,7 +28,7 @@ require __DIR__ . '/../app/views/public_top.php';
     </div>
     <div class="relative flex gap-3">
       <span class="rounded-2xl bg-white/10 px-5 py-3 text-center"><span class="block font-display text-3xl" data-count="<?= count($posters) ?>"><?= count($posters) ?></span><span class="text-xs text-mint">โปสเตอร์</span></span>
-      <span class="rounded-2xl bg-white/10 px-5 py-3 text-center"><span class="block font-display text-3xl"><?= count($groups) ?></span><span class="text-xs text-mint">เดือน</span></span>
+      <span class="rounded-2xl bg-white/10 px-5 py-3 text-center"><span class="block font-display text-3xl"><?= count($groups) ?></span><span class="text-xs text-mint">ปี</span></span>
     </div>
   </div>
 
@@ -43,15 +41,22 @@ require __DIR__ . '/../app/views/public_top.php';
         <svg class="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-ku pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
         <input type="search" value="<?= e($q) ?>" placeholder="พิมพ์ชื่อโปสเตอร์เพื่อค้นหา…" class="input rounded-full pl-12 bg-white" data-poster-search>
       </label>
+      <?php if (count($groups) > 1): ?>
+        <nav aria-label="ไปที่ปี" class="flex gap-1.5 flex-wrap items-center">
+          <?php foreach (array_keys($groups) as $year): ?>
+            <a href="#y<?= e($year) ?>" class="chip min-h-[36px] inline-flex items-center px-3.5 text-sm bg-mint text-ku hover:bg-lime transition" data-year-link="<?= e($year) ?>"><?= is_numeric($year) ? 'ปี ' : '' ?><?= e($year) ?></a>
+          <?php endforeach; ?>
+        </nav>
+      <?php endif; ?>
       <p class="text-sm text-muted" role="status">แสดง <strong class="text-ink" data-poster-shown><?= count($posters) ?></strong> จาก <?= count($posters) ?> โปสเตอร์</p>
     </div>
 
-    <div class="poster-board rounded-[32px] px-4 py-8 sm:p-9 flex flex-col gap-10">
-      <?php foreach ($groups as $label => $items): ?>
-        <section data-poster-group class="flex flex-col gap-6">
+    <div class="poster-board rounded-[32px] px-4 py-8 sm:p-9 flex flex-col gap-8">
+      <?php foreach ($groups as $year => $items): ?>
+        <section id="y<?= e($year) ?>" data-poster-group="<?= e($year) ?>" class="scroll-mt-44 flex flex-col gap-6">
           <h2 class="self-start inline-flex items-center gap-2 bg-white/80 rounded-full pl-2 pr-4 py-1.5 font-display font-medium text-ku shadow-sm">
             <span class="w-8 h-8 rounded-full bg-ku text-white flex items-center justify-center"><svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><rect x="3" y="4.5" width="18" height="16.5" rx="3"/><path d="M3 9.5h18M8 2.5v4M16 2.5v4"/></svg></span>
-            <?= e($label) ?> <span class="text-sm text-muted font-sans">· <?= count($items) ?> โปสเตอร์</span>
+            <?= is_numeric($year) ? 'ปี พ.ศ. ' : '' ?><?= e($year) ?> <span class="text-sm text-muted font-sans">· <span data-group-count><?= count($items) ?></span> โปสเตอร์</span>
           </h2>
           <ul class="grid gap-x-5 gap-y-9 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
             <?php foreach ($items as $p) { include __DIR__ . '/../app/views/partials/poster_card.php'; } ?>

@@ -199,7 +199,11 @@
         li.hidden = !ok; if (ok) shown++;
       });
       document.querySelectorAll('[data-poster-group]').forEach(function (g) {
-        g.hidden = !g.querySelector('[data-poster-item]:not([hidden])');
+        var n = g.querySelectorAll('[data-poster-item]:not([hidden])').length;
+        g.hidden = !n;
+        var c = g.querySelector('[data-group-count]'); if (c) c.textContent = n;
+        var chip = document.querySelector('[data-year-link="' + g.getAttribute('data-poster-group') + '"]');
+        if (chip) chip.hidden = !n;
       });
       if (posterEmpty) posterEmpty.hidden = shown > 0;
       if (posterShown) posterShown.textContent = shown;
