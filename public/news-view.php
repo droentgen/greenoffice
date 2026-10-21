@@ -18,7 +18,18 @@ require __DIR__ . '/../app/views/public_top.php';
     <h1 class="font-display font-semibold text-[clamp(28px,4vw,44px)] leading-tight"><?= e($n['title']) ?></h1>
     <div class="text-sm text-muted"><?= e(thai_date($n['published_at'])) ?></div>
     <?php if ($n['image_path']): ?><img src="<?= e(upload_url($n['image_path'])) ?>" alt="" class="w-full rounded-3xl"><?php endif; ?>
-    <div class="text-[17px] leading-loose whitespace-pre-line"><?= e($n['body']) ?></div>
+    <div class="text-[17px] leading-loose whitespace-pre-line"><?= render_body($n['body']) ?></div>
+    <?php $links = array_filter(NEWS_LINKS, fn($k) => !empty($n[$k]), ARRAY_FILTER_USE_KEY); ?>
+    <?php if ($links): ?>
+      <div class="card p-6 flex flex-col gap-3">
+        <h2 class="font-display font-semibold text-lg">ลิงก์สำหรับผู้เข้าร่วม</h2>
+        <div class="flex gap-2.5 flex-wrap">
+          <?php foreach ($links as $k => $label): ?>
+            <a href="<?= e($n[$k]) ?>" target="_blank" rel="noopener noreferrer" class="<?= $k === 'register_url' ? 'btn-primary' : 'btn-outline' ?>"><?= e($label) ?></a>
+          <?php endforeach; ?>
+        </div>
+      </div>
+    <?php endif; ?>
   <?php endif; ?>
 </article>
 <?php require __DIR__ . '/../app/views/public_bottom.php'; ?>

@@ -269,6 +269,43 @@ function clean_url(string $u): ?string
     return in_array($scheme, ['http', 'https'], true) ? $u : null;
 }
 
+/* ---------- News ---------- */
+
+const NEWS_CATS = ['กิจกรรม', 'ข่าวสาร', 'ประกาศ', 'อบรม/สัมมนา'];
+
+/** Training links on a news item: column => label (shown in this order). */
+const NEWS_LINKS = [
+    'register_url' => 'ลงทะเบียน',
+    'pretest_url'  => 'แบบทดสอบก่อนอบรม',
+    'posttest_url' => 'แบบทดสอบหลังอบรม',
+    'eval_url'     => 'แบบประเมินการฝึกอบรม',
+];
+
+/**
+ * News body → safe HTML. The text is escaped first, then only these are turned into tags:
+ *   ![คำอธิบาย](https://…)  image      [ข้อความ](https://…)  link      https://…  bare link
+ * Use inside an element with whitespace-pre-line so line breaks stay.
+ */
+function render_body(?string $text): string
+{
+    $link = fn(string $href, string $label) => '<a href="' . $href . '" target="_blank" rel="noopener noreferrer" class="text-ku underline break-all">' . $label . '</a>';
+    // Runs on already-escaped text, so captured URLs/labels are safe to drop straight into HTML.
+    return preg_replace_callback(
+        '~!\[([^\]\n]*)\]\((https?://[^\s()]+)\)|\[([^\]\n]+)\]\((https?://[^\s()]+)\)|https?://[\x21-\x7E]+~',
+        function (array $m) use ($link) {
+            if (($m[2] ?? '') !== '') {
+                return '<img src="' . $m[2] . '" alt="' . $m[1] . '" loading="lazy" class="block w-full rounded-2xl my-2">';
+            }
+            if (($m[4] ?? '') !== '') {
+                return $link($m[4], $m[3]);
+            }
+            $url = rtrim($m[0], '.,!?)');
+            return $link($url, $url) . substr($m[0], strlen($url));
+        },
+        e($text)
+    );
+}
+
 /** Turn a YouTube link into an embeddable URL, or return null. */
 function youtube_embed(string $url): ?string
 {

@@ -180,6 +180,44 @@
     f.addEventListener('input', upd); el.addEventListener('input', upd); upd();
   }
 
+  /* ---------- Admin: news body editor — insert links and uploaded images as [text](url) / ![](url) ---------- */
+  document.querySelectorAll('[data-body-editor]').forEach(function (box) {
+    var ta = box.querySelector('textarea'), file = box.querySelector('[data-image-file]');
+    var status = box.querySelector('[data-editor-status]');
+    function insert(text) {
+      var s = ta.selectionStart, end = ta.selectionEnd;
+      ta.value = ta.value.slice(0, s) + text + ta.value.slice(end);
+      ta.focus(); ta.selectionStart = ta.selectionEnd = s + text.length;
+    }
+    box.querySelector('[data-insert-link]').addEventListener('click', function () {
+      var url = prompt('วางลิงก์ (https://…)');
+      if (!url) return;
+      url = url.trim();
+      if (!/^https?:\/\/\S+$/i.test(url)) { status.textContent = 'ลิงก์ต้องขึ้นต้นด้วย http:// หรือ https://'; return; }
+      var picked = ta.value.slice(ta.selectionStart, ta.selectionEnd);
+      var label = picked || prompt('ข้อความที่จะแสดง', url) || url;
+      insert('[' + label.replace(/[\[\]\n]/g, ' ') + '](' + url.replace(/\(/g, '%28').replace(/\)/g, '%29') + ')');
+      status.textContent = '';
+    });
+    box.querySelector('[data-insert-image]').addEventListener('click', function () { file.click(); });
+    file.addEventListener('change', function () {
+      if (!file.files.length) return;
+      var fd = new FormData();
+      fd.append('image', file.files[0]);
+      fd.append('_csrf', box.closest('form').querySelector('[name="_csrf"]').value);
+      status.textContent = 'กำลังอัปโหลดรูป…';
+      fetch(box.getAttribute('data-upload-url'), { method: 'POST', body: fd, credentials: 'same-origin' })
+        .then(function (r) { return r.json().catch(function () { return { error: 'อัปโหลดไม่สำเร็จ (รหัส ' + r.status + ')' }; }); })
+        .then(function (res) {
+          if (res.error) { status.textContent = res.error; return; }
+          insert('\n![](' + res.url + ')\n');
+          status.textContent = 'แทรกรูปแล้ว';
+        })
+        .catch(function () { status.textContent = 'อัปโหลดไม่สำเร็จ — ตรวจการเชื่อมต่อแล้วลองใหม่'; })
+        .then(function () { file.value = ''; });
+    });
+  });
+
   /* ---------- Confirm before deleting ---------- */
   document.querySelectorAll('[data-confirm]').forEach(function (b) {
     b.addEventListener('click', function (ev) { if (!confirm(b.getAttribute('data-confirm'))) ev.preventDefault(); });

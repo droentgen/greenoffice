@@ -4,7 +4,7 @@ require __DIR__ . '/../app/bootstrap.php';
 $pageTitle = 'ข่าวสารและกิจกรรม';
 $active = 'news';
 
-$cats = ['กิจกรรม', 'ข่าวสาร', 'ประกาศ'];
+$cats = NEWS_CATS;
 $cat = in_array($_GET['cat'] ?? '', $cats, true) ? $_GET['cat'] : '';
 $news = $cat
     ? rows("SELECT * FROM news WHERE status = 'published' AND category = ? ORDER BY published_at DESC, id DESC", [$cat])

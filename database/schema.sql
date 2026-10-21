@@ -119,11 +119,15 @@ CREATE INDEX idx_criteria_evidence_ind_year ON criteria_evidence (indicator_id, 
 -- ---------- Content ----------
 CREATE TABLE news (
   id           SERIAL PRIMARY KEY,
-  category     VARCHAR(10) NOT NULL DEFAULT 'ข่าวสาร' CHECK (category IN ('กิจกรรม','ข่าวสาร','ประกาศ')),
+  category     VARCHAR(20) NOT NULL DEFAULT 'ข่าวสาร' CHECK (category IN ('กิจกรรม','ข่าวสาร','ประกาศ','อบรม/สัมมนา')),
   title        VARCHAR(255) NOT NULL,
   summary      VARCHAR(500) NOT NULL DEFAULT '',
-  body         TEXT NOT NULL,
+  body         TEXT NOT NULL,                     -- plain text + [ข้อความ](url) links and ![](url) images, see render_body()
   image_path   VARCHAR(255) NULL,
+  register_url VARCHAR(1000) NULL,                -- ลิงก์ลงทะเบียน
+  pretest_url  VARCHAR(1000) NULL,                -- ลิงก์สอบก่อนอบรม
+  posttest_url VARCHAR(1000) NULL,                -- ลิงก์สอบหลังอบรม
+  eval_url     VARCHAR(1000) NULL,                -- ลิงก์ประเมินการฝึกอบรม
   status       VARCHAR(10) NOT NULL DEFAULT 'draft' CHECK (status IN ('draft','review','published')),
   published_at DATE NULL,
   created_at   TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP

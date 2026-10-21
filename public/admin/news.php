@@ -4,7 +4,7 @@ require __DIR__ . '/../../app/bootstrap.php';
 $u = require_login(['editor']);
 $pageTitle = 'จัดการเนื้อหา (ข่าว)';
 $active = 'news';
-$cats = ['กิจกรรม', 'ข่าวสาร', 'ประกาศ'];
+$cats = NEWS_CATS;
 $statuses = ['draft' => ['ฉบับร่าง', '#EDF0EA', '#3E5553'], 'review' => ['รอตรวจ', '#FFF2C2', '#6B4E00'], 'published' => ['เผยแพร่แล้ว', '#DDF2E6', '#1E6B45']];
 
 if (is_post()) {
@@ -25,16 +25,21 @@ if (is_post()) {
         $cat = in_array($_POST['category'] ?? '', $cats, true) ? $_POST['category'] : 'ข่าวสาร';
         $status = array_key_exists($_POST['status'] ?? '', $statuses) ? $_POST['status'] : 'draft';
         $date = preg_match('/^\d{4}-\d{2}-\d{2}$/', (string)($_POST['published_at'] ?? '')) ? $_POST['published_at'] : date('Y-m-d');
+        $links = [];
+        foreach (NEWS_LINKS as $k => $label) {
+            $raw = trim((string)($_POST[$k] ?? ''));
+            $links[] = $raw === '' ? null : (clean_url($raw) ?? throw new RuntimeException('ลิงก์' . $label . 'ไม่ถูกต้อง (ต้องขึ้นต้นด้วย http:// หรือ https://)'));
+        }
         $img = save_upload('image', 'news', ['jpg', 'jpeg', 'png', 'webp']);
-        $data = [$cat, mb_substr($title, 0, 255), mb_substr(trim((string)$_POST['summary']), 0, 500), trim((string)$_POST['body']), $status, $date];
+        $data = [$cat, mb_substr($title, 0, 255), mb_substr(trim((string)$_POST['summary']), 0, 500), trim((string)$_POST['body']), $status, $date, ...$links];
         if ($id) {
             if ($img) {
                 delete_upload(val('SELECT image_path FROM news WHERE id = ?', [$id]) ?: null);
                 q('UPDATE news SET image_path = ? WHERE id = ?', [$img, $id]);
             }
-            q('UPDATE news SET category = ?, title = ?, summary = ?, body = ?, status = ?, published_at = ? WHERE id = ?', [...$data, $id]);
+            q('UPDATE news SET category = ?, title = ?, summary = ?, body = ?, status = ?, published_at = ?, register_url = ?, pretest_url = ?, posttest_url = ?, eval_url = ? WHERE id = ?', [...$data, $id]);
         } else {
-            q('INSERT INTO news (category, title, summary, body, status, published_at, image_path) VALUES (?,?,?,?,?,?,?)', [...$data, $img]);
+            q('INSERT INTO news (category, title, summary, body, status, published_at, register_url, pretest_url, posttest_url, eval_url, image_path) VALUES (?,?,?,?,?,?,?,?,?,?,?)', [...$data, $img]);
         }
         flash('บันทึกข่าวแล้ว');
         redirect('admin/news.php');
@@ -44,7 +49,7 @@ if (is_post()) {
     }
 }
 
-$editing = isset($_GET['new']) ? ['id' => 0, 'category' => 'ข่าวสาร', 'title' => '', 'summary' => '', 'body' => '', 'status' => 'draft', 'published_at' => date('Y-m-d'), 'image_path' => null]
+$editing = isset($_GET['new']) ? ['id' => 0, 'category' => 'ข่าวสาร', 'title' => '', 'summary' => '', 'body' => '', 'status' => 'draft', 'published_at' => date('Y-m-d'), 'image_path' => null] + array_fill_keys(array_keys(NEWS_LINKS), null)
     : (isset($_GET['edit']) ? row('SELECT * FROM news WHERE id = ?', [(int)$_GET['edit']]) : null);
 $list = rows('SELECT id, category, title, status, published_at FROM news ORDER BY published_at DESC, id DESC');
 
@@ -62,7 +67,25 @@ require __DIR__ . '/../../app/views/admin_top.php';
     <label class="label">วันที่เผยแพร่<input type="date" name="published_at" value="<?= e($editing['published_at']) ?>" class="input"></label>
   </div>
   <label class="label">สรุปสั้น (แสดงบนการ์ด)<input type="text" name="summary" value="<?= e($editing['summary']) ?>" maxlength="500" class="input"></label>
-  <label class="label">เนื้อหา<textarea name="body" rows="10" class="input leading-relaxed"><?= e($editing['body']) ?></textarea></label>
+  <div class="label" data-body-editor data-upload-url="<?= e(url('admin/news-upload.php')) ?>">
+    <span>เนื้อหา</span>
+    <div class="flex gap-2 flex-wrap items-center">
+      <button type="button" class="btn-sm btn-outline" data-insert-link>+ แทรกลิงก์</button>
+      <button type="button" class="btn-sm btn-outline" data-insert-image>+ แทรกรูป</button>
+      <input type="file" accept=".jpg,.jpeg,.png,.webp" hidden data-image-file>
+      <span class="text-sm text-muted font-normal" data-editor-status></span>
+    </div>
+    <textarea name="body" rows="12" class="input leading-relaxed"><?= e($editing['body']) ?></textarea>
+    <span class="text-xs text-muted font-normal">ลิงก์: [ข้อความ](https://…) · รูป: ![คำอธิบาย](https://…) · วางลิงก์ https://… ไว้ตรง ๆ ก็กดได้เช่นกัน</span>
+  </div>
+  <fieldset class="border-2 border-[#EDF0EA] rounded-2xl p-4 flex flex-col gap-3">
+    <legend class="px-1.5 font-semibold">ลิงก์สำหรับอบรม/สัมมนา <span class="text-sm text-muted font-normal">(ไม่บังคับ — ใส่เฉพาะที่มี)</span></legend>
+    <div class="grid gap-3 [grid-template-columns:repeat(auto-fit,minmax(260px,1fr))]">
+      <?php foreach (NEWS_LINKS as $k => $label): ?>
+        <label class="label">ลิงก์<?= e($label) ?><input type="url" name="<?= $k ?>" value="<?= e($editing[$k] ?? '') ?>" maxlength="1000" placeholder="https://" class="input"></label>
+      <?php endforeach; ?>
+    </div>
+  </fieldset>
   <label class="label">รูปภาพหน้าปก (JPG / PNG / WEBP)<input type="file" name="image" accept=".jpg,.jpeg,.png,.webp" class="input py-2.5"></label>
   <?php if (!empty($editing['image_path'])): ?><img src="<?= e(upload_url($editing['image_path'])) ?>" alt="" class="w-48 rounded-xl"><?php endif; ?>
   <div class="flex gap-2.5"><button class="btn-primary">บันทึก</button><a href="<?= e(url('admin/news.php')) ?>" class="btn-outline">ยกเลิก</a></div>

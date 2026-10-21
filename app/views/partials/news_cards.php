@@ -1,6 +1,6 @@
 <?php
 /** Grid of news cards. Expects $news (array of rows). */
-$tagStyle = ['กิจกรรม' => ['#E2F1DC', '#2F6B1F', '#CFE7C2'], 'ข่าวสาร' => ['#DCEEF0', '#00605E', '#BFE0DD'], 'ประกาศ' => ['#FFF0C9', '#7A5000', '#FFE29A']];
+$tagStyle = ['กิจกรรม' => ['#E2F1DC', '#2F6B1F', '#CFE7C2'], 'ข่าวสาร' => ['#DCEEF0', '#00605E', '#BFE0DD'], 'ประกาศ' => ['#FFF0C9', '#7A5000', '#FFE29A'], 'อบรม/สัมมนา' => ['#ECE6F7', '#553C8F', '#DCD0F0']];
 ?>
 <?php if (!$news): ?>
   <div class="card p-6 text-muted">ยังไม่มีข่าว</div>

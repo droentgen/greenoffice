@@ -39,3 +39,9 @@ users, settings, app_sessions (PHP session storage), resource_monthly, categorie
 criteria_reports (one per indicator per year; checks_json = finished sub-items), criteria_evidence (links),
 news, documents (about tabs + complaint plan; pdf/image/link), missions, activities, audit_findings,
 complaints, complaint_plan_steps, game_responses.
+
+Schema changes for an already-running database go in `database/migrations/<date>-<name>.sql` (run once in the Supabase SQL editor);
+keep `schema.sql` as the full current structure for fresh installs.
+
+News body is plain text with `[ข้อความ](url)` links and `![](url)` images, rendered by `render_body()` (escapes first);
+categories and training links (`NEWS_CATS`, `NEWS_LINKS`) live in `app/helpers.php`.
