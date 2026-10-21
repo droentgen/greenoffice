@@ -33,7 +33,8 @@ if (is_post()) {
         $img = save_upload('image', 'news', ['jpg', 'jpeg', 'png', 'webp']);
         $data = [$cat, mb_substr($title, 0, 255), mb_substr(trim((string)$_POST['summary']), 0, 500), trim((string)$_POST['body']), $status, $date, ...$links];
         if ($id) {
-            if ($img) {
+            // A new upload replaces the cover; "remove" with no new upload clears it ($img is null then).
+            if ($img || !empty($_POST['remove_image'])) {
                 delete_upload(val('SELECT image_path FROM news WHERE id = ?', [$id]) ?: null);
                 q('UPDATE news SET image_path = ? WHERE id = ?', [$img, $id]);
             }
@@ -87,7 +88,12 @@ require __DIR__ . '/../../app/views/admin_top.php';
     </div>
   </fieldset>
   <label class="label">รูปภาพหน้าปก (JPG / PNG / WEBP)<input type="file" name="image" accept=".jpg,.jpeg,.png,.webp" class="input py-2.5"></label>
-  <?php if (!empty($editing['image_path'])): ?><img src="<?= e(upload_url($editing['image_path'])) ?>" alt="" class="w-48 rounded-xl"><?php endif; ?>
+  <?php if (!empty($editing['image_path'])): ?>
+    <div class="flex gap-4 items-end flex-wrap">
+      <img src="<?= e(upload_url($editing['image_path'])) ?>" alt="" class="w-48 rounded-xl">
+      <label class="min-h-[44px] inline-flex items-center gap-2 text-sm font-semibold text-[#B42318] cursor-pointer"><input type="checkbox" name="remove_image" value="1" class="w-5 h-5"> ลบรูปหน้าปกนี้ (มีผลเมื่อกดบันทึก)</label>
+    </div>
+  <?php endif; ?>
   <div class="flex gap-2.5"><button class="btn-primary">บันทึก</button><a href="<?= e(url('admin/news.php')) ?>" class="btn-outline">ยกเลิก</a></div>
 </form>
 <?php else: ?>
