@@ -2,7 +2,7 @@
 -- Import this first, then seed.sql.
 
 DROP TABLE IF EXISTS criteria_evidence, criteria_reports, criteria_subitems, criteria_indicators, criteria_issues, categories,
-  resource_monthly, news, posters, missions, activities, audit_findings, documents, complaints, complaint_plan_steps,
+  resource_monthly, news, posters, mission_participants, missions, units, activities, audit_findings, documents, complaints, complaint_plan_steps,
   game_responses, settings, users, app_sessions CASCADE;
 
 -- Shared trigger: keep updated_at current on every UPDATE (replaces MySQL's "ON UPDATE CURRENT_TIMESTAMP").
@@ -158,16 +158,36 @@ CREATE TABLE documents (
   created_at   TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
--- Monthly missions on the home page
-CREATE TABLE missions (
-  id          SERIAL PRIMARY KEY,
-  name        VARCHAR(200) NOT NULL,
-  target_text VARCHAR(255) NOT NULL DEFAULT '',
-  progress    SMALLINT NOT NULL DEFAULT 0,        -- 0-100
-  color       VARCHAR(9) NOT NULL DEFAULT '#9CCB3B',
-  sort        INT NOT NULL DEFAULT 0,
-  is_active   SMALLINT NOT NULL DEFAULT 1
+-- Departments/majors people pick when joining a mission (managed in admin › หน่วยงาน/สาขาวิชา)
+CREATE TABLE units (
+  id        SERIAL PRIMARY KEY,
+  name      VARCHAR(150) NOT NULL,
+  sort      INT NOT NULL DEFAULT 0,
+  is_active SMALLINT NOT NULL DEFAULT 1
 );
+
+-- Monthly missions on the home page. Progress is computed live from mission_participants
+-- (count of people who clicked "เข้าร่วม") against target_count — not entered by hand.
+CREATE TABLE missions (
+  id           SERIAL PRIMARY KEY,
+  name         VARCHAR(200) NOT NULL,
+  target_text  VARCHAR(255) NOT NULL DEFAULT '',  -- human-readable goal, e.g. "เป้า: งดแก้วพลาสติกทุกการประชุม"
+  target_count INT NOT NULL DEFAULT 0,             -- numeric goal used to compute the progress bar, e.g. 100 คน
+  color        VARCHAR(9) NOT NULL DEFAULT '#9CCB3B',
+  sort         INT NOT NULL DEFAULT 0,
+  is_active    SMALLINT NOT NULL DEFAULT 1
+);
+
+-- One row per person who clicked "เข้าร่วม" on a mission
+CREATE TABLE mission_participants (
+  id         SERIAL PRIMARY KEY,
+  mission_id INT NOT NULL REFERENCES missions(id) ON DELETE CASCADE,
+  name       VARCHAR(150) NOT NULL,
+  unit_id    INT NOT NULL REFERENCES units(id),
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+CREATE INDEX idx_mission_participants_mission ON mission_participants (mission_id);
+CREATE INDEX idx_mission_participants_unit ON mission_participants (unit_id, created_at);
 
 -- Plans & activities board
 CREATE TABLE activities (
